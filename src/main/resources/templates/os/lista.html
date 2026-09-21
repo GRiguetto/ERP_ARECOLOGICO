@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Ordens de Serviço</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Resumo rápido -->
+    <div class="summary-grid">
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">OS em Aberto</div>
+        <div class="summary-card-value">7</div>
+        <div class="summary-card-sub">Aguardando execução</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Em Andamento</div>
+        <div class="summary-card-value">4</div>
+        <div class="summary-card-sub">Técnicos em campo</div>
+      </div>
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Concluídas (mês)</div>
+        <div class="summary-card-value">34</div>
+        <div class="summary-card-sub">+5% vs mês anterior</div>
+      </div>
+      <div class="summary-card summary-red">
+        <div class="summary-card-label">Canceladas</div>
+        <div class="summary-card-value">2</div>
+        <div class="summary-card-sub">No mês atual</div>
+      </div>
+    </div>
+
+    <!-- Tabela de OS -->
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-list-check"></i> Ordens de Serviço</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroOS" class="filter-input" placeholder="🔍 Buscar OS, cliente, técnico…">
+          <select class="filter-input" style="min-width:140px">
+            <option value="">Todos os status</option>
+            <option>Aberta</option>
+            <option>Em andamento</option>
+            <option>Finalizada</option>
+            <option>Cancelada</option>
+          </select>
+          <select class="filter-input" style="min-width:140px">
+            <option value="">Todos os tipos</option>
+            <option>Preventiva</option>
+            <option>Corretiva</option>
+            <option>Instalação</option>
+          </select>
+          <a th:href="@{/os/nova}" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Nova OS</a>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding: 16px 24px 0">
+        <table class="data-table" id="tabelaOS">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Técnico</th>
+              <th>Tipo</th>
+              <th>Abertura</th>
+              <th>Previsão</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">#0042</span></td>
+              <td>Condomínio Verde Park</td>
+              <td>Ricardo Souza</td>
+              <td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+              <td>20/03/2025</td>
+              <td>25/03/2025</td>
+              <td>R$ 850,00</td>
+              <td><span class="badge-status badge-em-andamento">Em andamento</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0041</span></td>
+              <td>Supermercado Bom Preço</td>
+              <td>Marcos Lima</td>
+              <td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+              <td>18/03/2025</td>
+              <td>20/03/2025</td>
+              <td>R$ 1.200,00</td>
+              <td><span class="badge-status badge-aberta">Aberta</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0040</span></td>
+              <td>Clínica Vida Saudável</td>
+              <td>Felipe Torres</td>
+              <td><span class="badge-servico badge-instalacao">Instalação</span></td>
+              <td>15/03/2025</td>
+              <td>15/03/2025</td>
+              <td>R$ 3.500,00</td>
+              <td><span class="badge-status badge-finalizada">Finalizada</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0039</span></td>
+              <td>Escritório DataTech Ltda.</td>
+              <td>Ricardo Souza</td>
+              <td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+              <td>12/03/2025</td>
+              <td>14/03/2025</td>
+              <td>R$ 620,00</td>
+              <td><span class="badge-status badge-finalizada">Finalizada</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0038</span></td>
+              <td>Residência Carlos Mendes</td>
+              <td>Marcos Lima</td>
+              <td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+              <td>10/03/2025</td>
+              <td>11/03/2025</td>
+              <td>R$ 480,00</td>
+              <td><span class="badge-status badge-cancelada">Cancelada</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0037</span></td>
+              <td>Hotel Garden Suites</td>
+              <td>Felipe Torres</td>
+              <td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+              <td>08/03/2025</td>
+              <td>10/03/2025</td>
+              <td>R$ 2.100,00</td>
+              <td><span class="badge-status badge-finalizada">Finalizada</span></td>
+              <td>
+                <a th:href="@{/os/detalhe}" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+                <a th:href="@{/os/nova}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Exibindo 6 de 47 registros</span>
+        <div class="pagination-btns">
+          <button class="page-btn"><i class="fa fa-angle-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn"><i class="fa fa-angle-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('os', 'Ordens de Serviço', 'fa-clipboard-list');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroOS', 'tabelaOS');
+    $('.page-btn').on('click', function () {
+      $('.page-btn').removeClass('active');
+      $(this).addClass('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Funcionários</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+  <style>
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--verde-medio), var(--verde-acento));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--fonte-display);
+      flex-shrink: 0;
+    }
+    .func-cell { display: flex; align-items: center; gap: 12px; }
+    .star-rating { color: #f59e0b; font-size: 12px; }
+    .rating-val { font-weight: 600; font-size: 13px; margin-left: 4px; }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Funcionários Ativos</div>
+        <div class="summary-card-value">8</div>
+        <div class="summary-card-sub">Equipe completa</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Técnicos em Campo</div>
+        <div class="summary-card-value">4</div>
+        <div class="summary-card-sub">Com OS ativas hoje</div>
+      </div>
+      <div class="summary-card summary-purple">
+        <div class="summary-card-label">Avaliação Média</div>
+        <div class="summary-card-value">4.7 ★</div>
+        <div class="summary-card-sub">Satisfação dos clientes</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">OS / Funcionário</div>
+        <div class="summary-card-value">8,5</div>
+        <div class="summary-card-sub">Média mensal</div>
+      </div>
+    </div>
+
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-users-gear"></i> Equipe</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroFunc" class="filter-input" placeholder="🔍 Buscar funcionário, cargo…">
+          <select class="filter-input" style="min-width:130px">
+            <option>Todos os cargos</option>
+            <option>Técnico</option>
+            <option>Administrativo</option>
+            <option>Gerência</option>
+          </select>
+          <a th:href="@{/rh/cadastro}" class="btn btn-primary btn-sm"><i class="fa fa-user-plus"></i> Novo Funcionário</a>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaFunc">
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th>Cargo</th>
+              <th>Especialidade</th>
+              <th>OS no Mês</th>
+              <th>Avaliação</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="func-cell">
+                  <div class="avatar-circle">RS</div>
+                  <div>
+                    <div style="font-weight:600">Ricardo Souza</div>
+                    <div style="font-size:12px;color:var(--texto-secundario)">(17) 99811-2233</div>
+                  </div>
+                </div>
+              </td>
+              <td>Técnico Sênior</td>
+              <td>Split / VRF / Chiller</td>
+              <td>12</td>
+              <td>
+                <span class="star-rating">★★★★★</span><span class="rating-val">4.9</span>
+              </td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/rh/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/rh/ponto}" class="btn-acao" title="Ponto"><i class="fa fa-clock"></i></a>
+                <a th:href="@{/rh/desempenho}" class="btn-acao" title="Desempenho"><i class="fa fa-star"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="func-cell">
+                  <div class="avatar-circle" style="background:linear-gradient(135deg,#0891b2,#0284c7)">ML</div>
+                  <div>
+                    <div style="font-weight:600">Marcos Lima</div>
+                    <div style="font-size:12px;color:var(--texto-secundario)">(17) 99822-4455</div>
+                  </div>
+                </div>
+              </td>
+              <td>Técnico Pleno</td>
+              <td>Split / Janela</td>
+              <td>9</td>
+              <td>
+                <span class="star-rating">★★★★☆</span><span class="rating-val">4.5</span>
+              </td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/rh/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/rh/ponto}" class="btn-acao"><i class="fa fa-clock"></i></a>
+                <a th:href="@{/rh/desempenho}" class="btn-acao"><i class="fa fa-star"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="func-cell">
+                  <div class="avatar-circle" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">FT</div>
+                  <div>
+                    <div style="font-weight:600">Felipe Torres</div>
+                    <div style="font-size:12px;color:var(--texto-secundario)">(17) 99833-6677</div>
+                  </div>
+                </div>
+              </td>
+              <td>Técnico Pleno</td>
+              <td>Instalação / VRF</td>
+              <td>11</td>
+              <td>
+                <span class="star-rating">★★★★★</span><span class="rating-val">4.8</span>
+              </td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/rh/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/rh/ponto}" class="btn-acao"><i class="fa fa-clock"></i></a>
+                <a th:href="@{/rh/desempenho}" class="btn-acao"><i class="fa fa-star"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="func-cell">
+                  <div class="avatar-circle" style="background:linear-gradient(135deg,#d97706,#b45309)">AB</div>
+                  <div>
+                    <div style="font-weight:600">Ana Beatriz Costa</div>
+                    <div style="font-size:12px;color:var(--texto-secundario)">(17) 99844-8899</div>
+                  </div>
+                </div>
+              </td>
+              <td>Técnica Júnior</td>
+              <td>Split</td>
+              <td>6</td>
+              <td>
+                <span class="star-rating">★★★★☆</span><span class="rating-val">4.3</span>
+              </td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/rh/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/rh/ponto}" class="btn-acao"><i class="fa fa-clock"></i></a>
+                <a th:href="@{/rh/desempenho}" class="btn-acao"><i class="fa fa-star"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="func-cell">
+                  <div class="avatar-circle" style="background:linear-gradient(135deg,#dc2626,#b91c1c)">JO</div>
+                  <div>
+                    <div style="font-weight:600">Juliana Oliveira</div>
+                    <div style="font-size:12px;color:var(--texto-secundario)">(17) 99855-1122</div>
+                  </div>
+                </div>
+              </td>
+              <td>Administrativo</td>
+              <td>Financeiro / OS</td>
+              <td>—</td>
+              <td>
+                <span style="color:var(--texto-secundario);font-size:12px">Sem avaliação</span>
+              </td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/rh/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/rh/ponto}" class="btn-acao"><i class="fa fa-clock"></i></a>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>5 de 8 funcionários exibidos</span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('rh', 'Funcionários', 'fa-users-gear');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroFunc', 'tabelaFunc');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Contas a Receber</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Total a Receber</div>
+        <div class="summary-card-value">R$ 28.400</div>
+        <div class="summary-card-sub">Valores em aberto</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Vence em 7 dias</div>
+        <div class="summary-card-value">R$ 9.800</div>
+        <div class="summary-card-sub">3 cobranças próximas</div>
+      </div>
+      <div class="summary-card summary-red">
+        <div class="summary-card-label">Vencidas</div>
+        <div class="summary-card-value">R$ 5.200</div>
+        <div class="summary-card-sub">2 clientes inadimplentes</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Recebido (mês)</div>
+        <div class="summary-card-value">R$ 43.100</div>
+        <div class="summary-card-sub">+12% vs mês anterior</div>
+      </div>
+    </div>
+
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-arrow-down"></i> Contas a Receber</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroReceber" class="filter-input" placeholder="🔍 Buscar por cliente, nº…">
+          <select class="filter-input" style="min-width:140px">
+            <option>Todos os status</option>
+            <option>Em aberto</option>
+            <option>Vencida</option>
+            <option>Recebida</option>
+            <option>Parcial</option>
+          </select>
+          <button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Lançamento Manual</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaReceber">
+          <thead>
+            <tr>
+              <th>Nº</th>
+              <th>Cliente</th>
+              <th>Referência</th>
+              <th>Emissão</th>
+              <th>Vencimento</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">F-0042</span></td>
+              <td>Condomínio Verde Park</td>
+              <td>OS #0042 – Manutenção Prev.</td>
+              <td>21/03/2025</td>
+              <td>05/04/2025</td>
+              <td><strong>R$ 850,00</strong></td>
+              <td><span class="badge-status badge-em-andamento">Em aberto</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar recebimento" onclick="registrarRecebimento('F-0042')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Enviar cobrança"><i class="fa fa-paper-plane"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">F-0041</span></td>
+              <td>Hotel Garden Suites</td>
+              <td>Contrato Mensal – Março</td>
+              <td>01/03/2025</td>
+              <td>10/03/2025</td>
+              <td><strong>R$ 3.200,00</strong></td>
+              <td><span class="badge-status badge-cancelada">Vencida</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar recebimento" onclick="registrarRecebimento('F-0041')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Enviar cobrança" onclick="showToast('Cobrança enviada!','success')"><i class="fa fa-paper-plane"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">F-0040</span></td>
+              <td>Clínica Vida Saudável</td>
+              <td>OS #0040 – Instalação</td>
+              <td>15/03/2025</td>
+              <td>01/03/2025</td>
+              <td><strong>R$ 3.500,00</strong></td>
+              <td><span class="badge-status badge-cancelada">Vencida</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar recebimento" onclick="registrarRecebimento('F-0040')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Enviar cobrança" onclick="showToast('Cobrança enviada!','success')"><i class="fa fa-paper-plane"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">F-0039</span></td>
+              <td>DataTech Soluções</td>
+              <td>OS #0039 – Preventiva</td>
+              <td>14/03/2025</td>
+              <td>31/03/2025</td>
+              <td><strong>R$ 620,00</strong></td>
+              <td><span class="badge-status badge-em-andamento">Em aberto</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar recebimento" onclick="registrarRecebimento('F-0039')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Enviar cobrança"><i class="fa fa-paper-plane"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">F-0038</span></td>
+              <td>Supermercado Bom Preço</td>
+              <td>Contrato Mensal – Fevereiro</td>
+              <td>01/02/2025</td>
+              <td>10/02/2025</td>
+              <td><strong>R$ 1.800,00</strong></td>
+              <td><span class="badge-status badge-finalizada">Recebida</span></td>
+              <td>
+                <button class="btn-acao" title="Ver comprovante"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Total em aberto: <strong style="color:var(--verde-claro)">R$ 28.400,00</strong></span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('financeiro', 'Contas a Receber', 'fa-arrow-down');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroReceber', 'tabelaReceber');
+  });
+
+  function registrarRecebimento(num) {
+    showToast(`Recebimento ${num} registrado com sucesso!`, 'success');
+  }
+</script>
+</body>
+</html>

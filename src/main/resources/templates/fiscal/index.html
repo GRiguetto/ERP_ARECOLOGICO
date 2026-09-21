@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Fiscal / NFS-e</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">NFS-e Emitidas (mês)</div>
+        <div class="summary-card-value">34</div>
+        <div class="summary-card-sub">Total no mês atual</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Valor Total</div>
+        <div class="summary-card-value">R$ 48.750</div>
+        <div class="summary-card-sub">Serviços faturados</div>
+      </div>
+      <div class="summary-card summary-purple">
+        <div class="summary-card-label">ISS Retido</div>
+        <div class="summary-card-value">R$ 1.218</div>
+        <div class="summary-card-sub">2,5% sobre serviços</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Pendentes de Emissão</div>
+        <div class="summary-card-value">3</div>
+        <div class="summary-card-sub">OS finalizadas sem NFS-e</div>
+      </div>
+    </div>
+
+    <!-- Pendentes de emissão -->
+    <div class="form-card">
+      <div class="form-card-title" style="color:#d97706"><i class="fa fa-triangle-exclamation"></i> Pendentes de Emissão</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>OS</th><th>Cliente</th><th>CNPJ/CPF</th><th>Data</th><th>Valor</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">#0042</span></td>
+              <td>Condomínio Verde Park</td>
+              <td>12.345.678/0001-90</td>
+              <td>20/03/2025</td>
+              <td>R$ 850,00</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="emitirNFSe('#0042')"><i class="fa fa-file-invoice"></i> Emitir NFS-e</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0041</span></td>
+              <td>Supermercado Bom Preço</td>
+              <td>98.765.432/0001-11</td>
+              <td>18/03/2025</td>
+              <td>R$ 1.200,00</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="emitirNFSe('#0041')"><i class="fa fa-file-invoice"></i> Emitir NFS-e</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">#0039</span></td>
+              <td>DataTech Soluções</td>
+              <td>44.222.111/0001-77</td>
+              <td>12/03/2025</td>
+              <td>R$ 620,00</td>
+              <td>
+                <button class="btn btn-primary btn-sm" onclick="emitirNFSe('#0039')"><i class="fa fa-file-invoice"></i> Emitir NFS-e</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Notas emitidas -->
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-file-invoice"></i> NFS-e Emitidas</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroNFSe" class="filter-input" placeholder="🔍 Buscar por nº, cliente…">
+          <select class="filter-input" style="min-width:140px">
+            <option>Todos os status</option>
+            <option>Autorizada</option>
+            <option>Cancelada</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Exportando XML…','success')">
+            <i class="fa fa-file-code"></i> Exportar XML
+          </button>
+        </div>
+      </div>
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaNFSe">
+          <thead>
+            <tr><th>Nº NFS-e</th><th>OS Ref.</th><th>Tomador</th><th>Emissão</th><th>Competência</th><th>Valor</th><th>ISS</th><th>Status</th><th>Ações</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">NF-0034</span></td>
+              <td>#0040</td>
+              <td>Clínica Vida Saudável</td>
+              <td>15/03/2025</td>
+              <td>03/2025</td>
+              <td>R$ 3.500,00</td>
+              <td>R$ 87,50</td>
+              <td><span class="badge-status badge-finalizada">Autorizada</span></td>
+              <td>
+                <button class="btn-acao" title="Baixar PDF" onclick="showToast('PDF gerado!','success')"><i class="fa fa-file-pdf"></i></button>
+                <button class="btn-acao" title="Baixar XML" onclick="showToast('XML baixado!','success')"><i class="fa fa-file-code"></i></button>
+                <button class="btn-acao" title="Cancelar" onclick="showToast('Cancelamento solicitado.','warn')"><i class="fa fa-ban"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">NF-0033</span></td>
+              <td>#0037</td>
+              <td>Hotel Garden Suites</td>
+              <td>10/03/2025</td>
+              <td>03/2025</td>
+              <td>R$ 2.100,00</td>
+              <td>R$ 52,50</td>
+              <td><span class="badge-status badge-finalizada">Autorizada</span></td>
+              <td>
+                <button class="btn-acao" onclick="showToast('PDF gerado!','success')"><i class="fa fa-file-pdf"></i></button>
+                <button class="btn-acao" onclick="showToast('XML baixado!','success')"><i class="fa fa-file-code"></i></button>
+                <button class="btn-acao" onclick="showToast('Cancelamento solicitado.','warn')"><i class="fa fa-ban"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">NF-0032</span></td>
+              <td>#0035</td>
+              <td>Supermercado Bom Preço</td>
+              <td>05/03/2025</td>
+              <td>03/2025</td>
+              <td>R$ 900,00</td>
+              <td>R$ 22,50</td>
+              <td><span class="badge-status badge-cancelada">Cancelada</span></td>
+              <td>
+                <button class="btn-acao" onclick="showToast('PDF gerado!','success')"><i class="fa fa-file-pdf"></i></button>
+                <button class="btn-acao" onclick="showToast('XML baixado!','success')"><i class="fa fa-file-code"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span>Exibindo 3 de 34 notas</span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('fiscal', 'Fiscal / NFS-e', 'fa-file-invoice');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroNFSe', 'tabelaNFSe');
+  });
+
+  function emitirNFSe(os) {
+    showToast(`NFS-e da OS ${os} emitida com sucesso!`, 'success');
+  }
+</script>
+</body>
+</html>

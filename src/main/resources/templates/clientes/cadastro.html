@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Cadastro de Cliente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Tipo de cliente -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-user-tag"></i> Tipo de Cliente</div>
+      <div style="display:flex; gap:16px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500">
+          <input type="radio" name="tipoCli" value="pj" checked onchange="toggleTipo(this.value)"> Pessoa Jurídica (PJ)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500">
+          <input type="radio" name="tipoCli" value="pf" onchange="toggleTipo(this.value)"> Pessoa Física (PF)
+        </label>
+      </div>
+    </div>
+
+    <!-- Dados principais -->
+    <div class="form-card">
+      <div class="form-card-title" id="tituloForm"><i class="fa fa-building"></i> Dados da Empresa</div>
+
+      <div id="campoPJ">
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Razão Social *</label>
+            <input type="text" class="form-control" placeholder="Nome completo da empresa">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nome Fantasia</label>
+            <input type="text" class="form-control" placeholder="Nome comercial">
+          </div>
+        </div>
+        <div class="form-row cols-3">
+          <div class="form-group">
+            <label class="form-label">CNPJ *</label>
+            <input type="text" class="form-control" placeholder="00.000.000/0001-00" id="cnpj" oninput="formatarCNPJ(this)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Inscrição Estadual</label>
+            <input type="text" class="form-control" placeholder="000.000.000.000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ramo de Atividade</label>
+            <select class="form-control">
+              <option>— Selecione —</option>
+              <option>Saúde</option>
+              <option>Comércio</option>
+              <option>Educação</option>
+              <option>Hotelaria</option>
+              <option>Condomínio</option>
+              <option>Indústria</option>
+              <option>Outros</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="campoPF" style="display:none">
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Nome Completo *</label>
+            <input type="text" class="form-control" placeholder="Nome completo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CPF *</label>
+            <input type="text" class="form-control" placeholder="000.000.000-00">
+          </div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Data de Nascimento</label>
+            <input type="date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">RG</label>
+            <input type="text" class="form-control" placeholder="00.000.000-0">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contato -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-phone"></i> Contato</div>
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">Telefone Principal</label>
+          <input type="text" class="form-control" placeholder="(17) 3300-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Celular / WhatsApp</label>
+          <input type="text" class="form-control" placeholder="(17) 99900-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input type="email" class="form-control" placeholder="contato@empresa.com.br">
+        </div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Nome do Responsável / Contato</label>
+          <input type="text" class="form-control" placeholder="Responsável pelo atendimento">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cargo / Função</label>
+          <input type="text" class="form-control" placeholder="Gerente, Proprietário…">
+        </div>
+      </div>
+    </div>
+
+    <!-- Endereço -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-map-marker-alt"></i> Endereço</div>
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">CEP</label>
+          <input type="text" class="form-control" placeholder="00000-000" id="cep" oninput="buscarCEP(this)">
+        </div>
+        <div class="form-group" style="grid-column: span 2">
+          <label class="form-label">Logradouro</label>
+          <input type="text" class="form-control" id="logradouro" placeholder="Rua, Av., Alameda…">
+        </div>
+      </div>
+      <div class="form-row cols-4">
+        <div class="form-group">
+          <label class="form-label">Número</label>
+          <input type="text" class="form-control" placeholder="Nº">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Complemento</label>
+          <input type="text" class="form-control" placeholder="Sala, Bloco…">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bairro</label>
+          <input type="text" class="form-control" id="bairro" placeholder="Bairro">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade / UF</label>
+          <input type="text" class="form-control" id="cidade" placeholder="Cidade / SP">
+        </div>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-note-sticky"></i> Observações</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Observações internas</label>
+          <textarea class="form-control" rows="3" placeholder="Informações relevantes sobre este cliente para a equipe interna…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <a th:href="@{/clientes/lista}" class="btn btn-secondary"><i class="fa fa-xmark"></i> Cancelar</a>
+        <button class="btn btn-primary" onclick="salvarCliente()"><i class="fa fa-check"></i> Salvar Cliente</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('clientes', 'Cadastro de Cliente', 'fa-user-plus');
+
+  function toggleTipo(val) {
+    document.getElementById('campoPJ').style.display = val === 'pj' ? '' : 'none';
+    document.getElementById('campoPF').style.display = val === 'pf' ? '' : 'none';
+    document.getElementById('tituloForm').innerHTML = val === 'pj'
+      ? '<i class="fa fa-building"></i> Dados da Empresa'
+      : '<i class="fa fa-user"></i> Dados Pessoais';
+  }
+
+  function formatarCNPJ(el) {
+    let v = el.value.replace(/\D/g,'');
+    v = v.replace(/^(\d{2})(\d)/,'$1.$2');
+    v = v.replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3');
+    v = v.replace(/\.(\d{3})(\d)/,'.$1/$2');
+    v = v.replace(/(\d{4})(\d)/,'$1-$2');
+    el.value = v;
+  }
+
+  function buscarCEP(el) {
+    const cep = el.value.replace(/\D/g,'');
+    if (cep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(r => r.json())
+        .then(d => {
+          if (!d.erro) {
+            document.getElementById('logradouro').value = d.logradouro || '';
+            document.getElementById('bairro').value = d.bairro || '';
+            document.getElementById('cidade').value = (d.localidade || '') + ' / ' + (d.uf || '');
+          }
+        }).catch(() => {});
+    }
+  }
+
+  function salvarCliente() {
+    showToast('Cliente cadastrado com sucesso!', 'success');
+    setTimeout(() => window.location.href = 'clientes-lista.html', 1500);
+  }
+</script>
+</body>
+</html>

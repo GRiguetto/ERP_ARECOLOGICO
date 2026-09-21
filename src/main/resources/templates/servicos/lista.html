@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Serviços</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<!-- Modal: Novo Serviço -->
+<div class="modal-overlay" id="modalServico">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa fa-hammer"></i> <span id="modalServTitulo">Novo Serviço</span></div>
+    <div class="form-row cols-2">
+      <div class="form-group">
+        <label class="form-label">Nome do Serviço *</label>
+        <input type="text" class="form-control" id="servNome" placeholder="Ex.: Manutenção Preventiva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <select class="form-control" id="servCategoria">
+          <option>Preventiva</option>
+          <option>Corretiva</option>
+          <option>Instalação</option>
+          <option>Desinstalação</option>
+          <option>Higienização</option>
+          <option>Outros</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group">
+        <label class="form-label">Valor Padrão (R$)</label>
+        <input type="text" class="form-control" id="servValor" placeholder="0,00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tempo Estimado (horas)</label>
+        <input type="number" class="form-control" id="servTempo" value="2" min="0.5" step="0.5">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:8px">
+      <label class="form-label">Descrição</label>
+      <textarea class="form-control" id="servDesc" rows="2" placeholder="Descreva o serviço, materiais incluídos, garantia…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalServico')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarServico()"><i class="fa fa-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Serviços Cadastrados</div>
+        <div class="summary-card-value">12</div>
+        <div class="summary-card-sub">Tipos disponíveis</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Mais Executado</div>
+        <div class="summary-card-value">Preventiva</div>
+        <div class="summary-card-sub">42 OS no mês</div>
+      </div>
+      <div class="summary-card summary-purple">
+        <div class="summary-card-label">Ticket Médio</div>
+        <div class="summary-card-value">R$ 812</div>
+        <div class="summary-card-sub">Por OS no mês</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Tempo Médio</div>
+        <div class="summary-card-value">3,2 h</div>
+        <div class="summary-card-sub">Por atendimento</div>
+      </div>
+    </div>
+
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-hammer"></i> Catálogo de Serviços</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroServicos" class="filter-input" placeholder="🔍 Buscar serviço…">
+          <select class="filter-input" style="min-width:140px">
+            <option>Todas categorias</option>
+            <option>Preventiva</option>
+            <option>Corretiva</option>
+            <option>Instalação</option>
+            <option>Higienização</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modalServico')"><i class="fa fa-plus"></i> Novo Serviço</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaServicos">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Serviço</th>
+              <th>Categoria</th>
+              <th>Valor Padrão</th>
+              <th>Tempo Est.</th>
+              <th>OS no Mês</th>
+              <th>Ativo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">SRV001</span></td>
+              <td>
+                <strong>Manutenção Preventiva – Split</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Limpeza, filtros, gás, dreno, funcionamento</div>
+              </td>
+              <td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+              <td>R$ 280,00</td>
+              <td>2h</td>
+              <td>28</td>
+              <td><span class="badge-status badge-finalizada">Sim</span></td>
+              <td>
+                <button class="btn-acao" title="Editar" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">SRV002</span></td>
+              <td>
+                <strong>Manutenção Corretiva – Split</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Diagnóstico, reparo de falhas, substituição de peças</div>
+              </td>
+              <td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+              <td>R$ 350,00</td>
+              <td>3h</td>
+              <td>12</td>
+              <td><span class="badge-status badge-finalizada">Sim</span></td>
+              <td>
+                <button class="btn-acao" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">SRV003</span></td>
+              <td>
+                <strong>Instalação de Split 9.000 BTU</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Inclui suporte, dreno e carga de gás até 5m de tubulação</div>
+              </td>
+              <td><span class="badge-servico badge-instalacao">Instalação</span></td>
+              <td>R$ 650,00</td>
+              <td>4h</td>
+              <td>8</td>
+              <td><span class="badge-status badge-finalizada">Sim</span></td>
+              <td>
+                <button class="btn-acao" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">SRV004</span></td>
+              <td>
+                <strong>Higienização Completa – Split</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Limpeza com produtos bactericidas, secagem e teste</div>
+              </td>
+              <td><span class="badge-servico badge-preventiva">Higienização</span></td>
+              <td>R$ 180,00</td>
+              <td>1.5h</td>
+              <td>6</td>
+              <td><span class="badge-status badge-finalizada">Sim</span></td>
+              <td>
+                <button class="btn-acao" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">SRV005</span></td>
+              <td>
+                <strong>Recarga de Gás R-410A</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Verificação de vazamento + recarga por kg</div>
+              </td>
+              <td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+              <td>R$ 220,00</td>
+              <td>2h</td>
+              <td>5</td>
+              <td><span class="badge-status badge-finalizada">Sim</span></td>
+              <td>
+                <button class="btn-acao" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">SRV006</span></td>
+              <td>
+                <strong>Visita Técnica / Orçamento</strong>
+                <div style="font-size:12px;color:var(--texto-secundario);margin-top:2px">Diagnóstico in loco sem execução de serviço</div>
+              </td>
+              <td><span class="badge-servico badge-instalacao">Outros</span></td>
+              <td>R$ 80,00</td>
+              <td>1h</td>
+              <td>4</td>
+              <td><span class="badge-status badge-cancelada">Não</span></td>
+              <td>
+                <button class="btn-acao" onclick="openModal('modalServico')"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Exibindo 6 de 12 serviços</span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('servicos', 'Serviços', 'fa-hammer');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroServicos', 'tabelaServicos');
+  });
+
+  function salvarServico() {
+    const nome = document.getElementById('servNome').value.trim();
+    if (!nome) { showToast('Informe o nome do serviço.', 'warn'); return; }
+    closeModal('modalServico');
+    showToast(`Serviço "${nome}" salvo com sucesso!`, 'success');
+  }
+</script>
+</body>
+</html>

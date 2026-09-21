@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Clientes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Clientes Ativos</div>
+        <div class="summary-card-value">58</div>
+        <div class="summary-card-sub">Com contrato ou OS recente</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Pessoa Jurídica</div>
+        <div class="summary-card-value">39</div>
+        <div class="summary-card-sub">Empresas e condomínios</div>
+      </div>
+      <div class="summary-card summary-purple">
+        <div class="summary-card-label">Pessoa Física</div>
+        <div class="summary-card-value">19</div>
+        <div class="summary-card-sub">Residências</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Com Inadimplência</div>
+        <div class="summary-card-value">3</div>
+        <div class="summary-card-sub">Pagamentos em atraso</div>
+      </div>
+    </div>
+
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-users"></i> Clientes Cadastrados</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroClientes" class="filter-input" placeholder="🔍 Buscar por nome, CNPJ, cidade…">
+          <select class="filter-input" style="min-width:130px">
+            <option>Todos os tipos</option>
+            <option>Pessoa Jurídica</option>
+            <option>Pessoa Física</option>
+          </select>
+          <a th:href="@{/clientes/cadastro}" class="btn btn-primary btn-sm"><i class="fa fa-user-plus"></i> Novo Cliente</a>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaClientes">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome / Razão Social</th>
+              <th>Tipo</th>
+              <th>CNPJ / CPF</th>
+              <th>Telefone</th>
+              <th>Cidade</th>
+              <th>Contratos</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">001</td>
+              <td><strong>Condomínio Verde Park</strong></td>
+              <td><span class="badge-servico badge-preventiva">PJ</span></td>
+              <td>12.345.678/0001-90</td>
+              <td>(17) 3301-4422</td>
+              <td>São José do Rio Preto</td>
+              <td>2 ativos</td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao" title="Ver OS"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" title="Excluir" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">002</td>
+              <td><strong>Supermercado Bom Preço</strong></td>
+              <td><span class="badge-servico badge-preventiva">PJ</span></td>
+              <td>98.765.432/0001-11</td>
+              <td>(17) 3312-7788</td>
+              <td>São José do Rio Preto</td>
+              <td>1 ativo</td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">003</td>
+              <td><strong>Clínica Vida Saudável</strong></td>
+              <td><span class="badge-servico badge-preventiva">PJ</span></td>
+              <td>55.123.456/0001-33</td>
+              <td>(17) 3344-9900</td>
+              <td>Mirassol</td>
+              <td>1 ativo</td>
+              <td><span class="badge-status badge-cancelada">Inadimplente</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">004</td>
+              <td><strong>Carlos Eduardo Mendes</strong></td>
+              <td><span class="badge-servico badge-instalacao">PF</span></td>
+              <td>123.456.789-00</td>
+              <td>(17) 99812-3344</td>
+              <td>São José do Rio Preto</td>
+              <td>—</td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">005</td>
+              <td><strong>Hotel Garden Suites</strong></td>
+              <td><span class="badge-servico badge-preventiva">PJ</span></td>
+              <td>77.888.999/0001-55</td>
+              <td>(17) 3355-1122</td>
+              <td>São José do Rio Preto</td>
+              <td>3 ativos</td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--texto-secundario);font-family:monospace">006</td>
+              <td><strong>DataTech Soluções Ltda.</strong></td>
+              <td><span class="badge-servico badge-preventiva">PJ</span></td>
+              <td>44.222.111/0001-77</td>
+              <td>(17) 3388-6600</td>
+              <td>Bady Bassitt</td>
+              <td>1 ativo</td>
+              <td><span class="badge-status badge-finalizada">Ativo</span></td>
+              <td>
+                <a th:href="@{/clientes/cadastro}" class="btn-acao"><i class="fa fa-pen"></i></a>
+                <a th:href="@{/os/lista}" class="btn-acao"><i class="fa fa-clipboard-list"></i></a>
+                <a href="#" class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Exibindo 6 de 58 registros</span>
+        <div class="pagination-btns">
+          <button class="page-btn"><i class="fa fa-angle-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn"><i class="fa fa-angle-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('clientes', 'Clientes', 'fa-users');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroClientes', 'tabelaClientes');
+    $('.page-btn').on('click', function () { $('.page-btn').removeClass('active'); $(this).addClass('active'); });
+  });
+</script>
+</body>
+</html>

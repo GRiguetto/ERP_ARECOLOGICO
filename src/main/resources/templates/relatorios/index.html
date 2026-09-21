@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Relatórios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+
+  <style>
+    /* ── Cards do catálogo de relatórios ── */
+    .report-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--sombra-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-top: 4px solid var(--verde-claro);
+      transition: box-shadow var(--transicao), transform var(--transicao);
+      cursor: pointer;
+    }
+    .report-card:hover { box-shadow: var(--sombra-hover); transform: translateY(-2px); }
+    .report-icon { width: 48px; height: 48px; border-radius: 12px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--verde-claro); }
+    .report-title { font-family: var(--fonte-display); font-size: 14.5px; font-weight: 700; color: var(--texto-principal); }
+    .report-desc { font-size: 12.5px; color: var(--texto-secundario); line-height: 1.5; }
+    .report-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .reports-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+
+    /* ── Barras de gráfico ── */
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+    .bar-label { width: 130px; flex-shrink: 0; color: var(--texto-secundario); font-size: 12px; }
+    .bar-track { flex: 1; height: 10px; background: #e5ece7; border-radius: 20px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 20px; background: var(--verde-claro); }
+    .bar-val { width: 80px; flex-shrink: 0; text-align: right; font-weight: 600; font-size: 12px; }
+
+    /* ══════════════════════════════════════
+       MODAL – overlay + caixa
+    ══════════════════════════════════════ */
+    .modal-overlay {
+      display: none;               /* escondido por padrão */
+      position: fixed;
+      inset: 0;                    /* cobre a tela inteira */
+      background: rgba(0,0,0,0.55);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeIn .2s ease;
+    }
+    /* Quando o JS adiciona a classe .open, exibe o overlay */
+    .modal-overlay.open { display: flex; }
+
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0,0,0,.22);
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(24px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+
+    /* Cabeçalho do modal */
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;        /* fica fixo ao rolar o conteúdo */
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .modal-header-left { display: flex; align-items: center; gap: 12px; }
+    .modal-header-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .modal-title { font-family: var(--fonte-display); font-size: 16px; font-weight: 700; color: var(--texto-principal); }
+    .modal-subtitle { font-size: 12px; color: var(--texto-secundario); margin-top: 2px; }
+    .modal-header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-modal-close {
+      background: none; border: none; font-size: 20px;
+      color: var(--texto-secundario); cursor: pointer; padding: 4px 8px;
+      border-radius: 6px; transition: background .15s;
+    }
+    .btn-modal-close:hover { background: #f3f4f6; }
+
+    /* Corpo do modal */
+    .modal-body { padding: 24px 28px 28px; }
+
+    /* ── Tabela dentro do modal ── */
+    .modal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .modal-table th {
+      background: #f9fafb; padding: 10px 14px;
+      text-align: left; font-size: 11px; text-transform: uppercase;
+      letter-spacing: .04em; color: var(--texto-secundario);
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .modal-table td { padding: 11px 14px; border-bottom: 1px solid #f3f4f6; color: var(--texto-principal); }
+    .modal-table tr:last-child td { border-bottom: none; }
+    .modal-table tr:hover td { background: #f9fafb; }
+
+    /* ── Linha de totais dentro da tabela DRE ── */
+    .modal-table tr.total-row td { font-weight: 700; background: #f0fdf4; color: var(--verde-escuro); }
+    .modal-table tr.section-row td { background: #f9fafb; font-weight: 600; color: var(--texto-principal); font-size: 12px; }
+    .modal-table tr.indent td:first-child { padding-left: 32px; color: var(--texto-secundario); }
+
+    /* ── KPIs dentro do modal ── */
+    .modal-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    .modal-kpi { background: #f9fafb; border-radius: 10px; padding: 14px 16px; }
+    .modal-kpi-label { font-size: 11px; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: .04em; }
+    .modal-kpi-value { font-size: 20px; font-weight: 700; color: var(--verde-escuro); margin-top: 4px; }
+    .modal-kpi-sub { font-size: 11px; color: var(--texto-secundario); margin-top: 2px; }
+
+    /* ── Badges reutilizáveis no modal ── */
+    .tag { display:inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .tag-green { background:#dcfce7; color:#16a34a; }
+    .tag-red   { background:#fee2e2; color:#dc2626; }
+    .tag-blue  { background:#dbeafe; color:#1d4ed8; }
+    .tag-orange{ background:#ffedd5; color:#ea580c; }
+    .tag-gray  { background:#f3f4f6; color:#6b7280; }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- ── Filtro global ── -->
+    <div class="form-card" style="padding:20px">
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap">
+        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--texto-secundario)">
+          <i class="fa fa-calendar-days" style="color:var(--verde-claro)"></i> Período:
+        </div>
+        <select class="form-control" style="max-width:180px">
+          <option>Março / 2025</option>
+          <option>Fevereiro / 2025</option>
+          <option>Janeiro / 2025</option>
+          <option>Últimos 3 meses</option>
+          <option>Ano 2025</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Relatórios atualizados!','success')">
+          <i class="fa fa-rotate"></i> Atualizar
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Exportando todos os relatórios…','success')">
+          <i class="fa fa-file-excel"></i> Exportar Tudo
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Gráficos de visão geral ── -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-chart-bar"></i> Faturamento por Mês (2025)</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Janeiro</span><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><span class="bar-val">R$ 36.000</span></div>
+          <div class="bar-row"><span class="bar-label">Fevereiro</span><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div><span class="bar-val">R$ 41.000</span></div>
+          <div class="bar-row"><span class="bar-label">Março</span><div class="bar-track"><div class="bar-fill" style="width:97%"></div></div><span class="bar-val">R$ 48.750</span></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-chart-pie"></i> OS por Tipo de Serviço</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Preventiva</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:#16a34a"></div></div><span class="bar-val">28 OS (60%)</span></div>
+          <div class="bar-row"><span class="bar-label">Corretiva</span><div class="bar-track"><div class="bar-fill" style="width:26%;background:#d97706"></div></div><span class="bar-val">12 OS (26%)</span></div>
+          <div class="bar-row"><span class="bar-label">Instalação</span><div class="bar-track"><div class="bar-fill" style="width:14%;background:#7c3aed"></div></div><span class="bar-val">6 OS (14%)</span></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-medal"></i> Ranking de Técnicos (Março)</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Ricardo Souza</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#16a34a"></div></div><span class="bar-val">12 OS</span></div>
+          <div class="bar-row"><span class="bar-label">Felipe Torres</span><div class="bar-track"><div class="bar-fill" style="width:92%;background:#0891b2"></div></div><span class="bar-val">11 OS</span></div>
+          <div class="bar-row"><span class="bar-label">Marcos Lima</span><div class="bar-track"><div class="bar-fill" style="width:75%;background:#7c3aed"></div></div><span class="bar-val">9 OS</span></div>
+          <div class="bar-row"><span class="bar-label">Ana Beatriz</span><div class="bar-track"><div class="bar-fill" style="width:50%;background:#d97706"></div></div><span class="bar-val">6 OS</span></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-trophy"></i> Top Clientes por Faturamento</div>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">Hotel Garden</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#16a34a"></div></div><span class="bar-val">R$ 12.400</span></div>
+          <div class="bar-row"><span class="bar-label">Cond. Verde Park</span><div class="bar-track"><div class="bar-fill" style="width:75%;background:#0891b2"></div></div><span class="bar-val">R$ 9.300</span></div>
+          <div class="bar-row"><span class="bar-label">Clínica Vida</span><div class="bar-track"><div class="bar-fill" style="width:56%;background:#7c3aed"></div></div><span class="bar-val">R$ 6.950</span></div>
+          <div class="bar-row"><span class="bar-label">Superm. Bom Preço</span><div class="bar-track"><div class="bar-fill" style="width:48%;background:#d97706"></div></div><span class="bar-val">R$ 5.980</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Catálogo de relatórios ── -->
+    <div>
+      <h2 class="section-label"><i class="fa fa-folder-open"></i> Relatórios Disponíveis</h2>
+      <div class="reports-grid">
+
+        <div class="report-card" style="border-top-color:#16a34a">
+          <div class="report-icon"><i class="fa fa-chart-line"></i></div>
+          <div class="report-title">DRE – Demonstrativo de Resultado</div>
+          <div class="report-desc">Receitas, custos, despesas e lucro líquido do período selecionado.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('dre')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('dre')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+        <div class="report-card" style="border-top-color:#0891b2">
+          <div class="report-icon" style="background:#ecfeff;color:#0891b2"><i class="fa fa-clipboard-list"></i></div>
+          <div class="report-title">Ordens de Serviço por Período</div>
+          <div class="report-desc">Listagem completa de OS com filtros por status, técnico e tipo.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('os')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('os')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+        <div class="report-card" style="border-top-color:#7c3aed">
+          <div class="report-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fa fa-users"></i></div>
+          <div class="report-title">Inadimplência</div>
+          <div class="report-desc">Clientes com pagamentos vencidos, valores e dias de atraso.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('inadimplencia')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('inadimplencia')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+        <div class="report-card" style="border-top-color:#d97706">
+          <div class="report-icon" style="background:#fffbeb;color:#d97706"><i class="fa fa-boxes-stacked"></i></div>
+          <div class="report-title">Movimentação de Estoque</div>
+          <div class="report-desc">Entradas, saídas e saldo de cada item do período.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('estoque')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('estoque')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+        <div class="report-card" style="border-top-color:#dc2626">
+          <div class="report-icon" style="background:#fef2f2;color:#dc2626"><i class="fa fa-users-gear"></i></div>
+          <div class="report-title">Produtividade da Equipe</div>
+          <div class="report-desc">OS por técnico, tempo médio, avaliação e retrabalho.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('equipe')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('equipe')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+        <div class="report-card" style="border-top-color:#0284c7">
+          <div class="report-icon" style="background:#f0f9ff;color:#0284c7"><i class="fa fa-file-signature"></i></div>
+          <div class="report-title">Carteira de Contratos</div>
+          <div class="report-desc">Contratos ativos, receita recorrente e previsão de renovações.</div>
+          <div class="report-actions">
+            <button class="btn btn-primary btn-sm" onclick="abrirModal('contratos')"><i class="fa fa-eye"></i> Visualizar</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportarPDF('contratos')" title="Exportar PDF"><i class="fa fa-file-pdf"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+
+<!-- ══════════════════════════════════════════════════════
+     MODAL ÚNICO — o conteúdo é trocado dinamicamente
+     pelo JavaScript conforme o relatório clicado.
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModalFora(event)">
+  <div class="modal-box" id="modalBox">
+
+    <!-- Cabeçalho fixo com título + botões -->
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-header-icon" id="modalIcon"></div>
+        <div>
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-subtitle" id="modalSubtitle"></div>
+        </div>
+      </div>
+      <div class="modal-header-actions">
+        <button class="btn btn-primary btn-sm" id="btnPdfModal" onclick="exportarPDFAtual()">
+          <i class="fa fa-file-pdf"></i> Exportar PDF
+        </button>
+        <button class="btn-modal-close" onclick="fecharModal()" title="Fechar">
+          <i class="fa fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Corpo — preenchido dinamicamente -->
+    <div class="modal-body" id="modalBody"></div>
+
+  </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+<!-- jsPDF: biblioteca que gera PDF direto no navegador, sem backend -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- jsPDF AutoTable: plugin para gerar tabelas formatadas no PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+
+<script>
+  // ── Inicializa o layout com menu lateral ──
+  initLayout('relatorios', 'Relatórios', 'fa-chart-column');
+  $(document).ready(function () { animateCards('.summary-card, .report-card'); });
+
+  // ── Variável que guarda qual relatório está aberto ──
+  // Usada pelo botão "Exportar PDF" dentro do modal
+  let modalAtual = null;
+
+  // ══════════════════════════════════════════════════════
+  // DEFINIÇÃO DOS RELATÓRIOS
+  // Cada relatório tem: título, subtítulo, ícone, cor,
+  // e uma função que retorna o HTML do conteúdo do modal.
+  // ══════════════════════════════════════════════════════
+  const relatorios = {
+
+    // ── 1. DRE ──────────────────────────────────────────
+    dre: {
+      titulo: 'DRE – Demonstrativo de Resultado',
+      subtitulo: 'Março / 2025',
+      icone: 'fa fa-chart-line',
+      cor: '#16a34a',
+      bgIcone: '#f0fdf4',
+      // Dados simulados para o PDF (linhas da tabela)
+      dadosPDF: [
+        ['RECEITA BRUTA', 'R$ 48.750,00', '100%'],
+        ['  Serviços preventivos', 'R$ 28.400,00', '58,3%'],
+        ['  Serviços corretivos', 'R$ 12.150,00', '24,9%'],
+        ['  Instalações', 'R$ 8.200,00', '16,8%'],
+        ['(-) DEDUÇÕES', '- R$ 3.900,00', '8,0%'],
+        ['(=) RECEITA LÍQUIDA', 'R$ 44.850,00', '92,0%'],
+        ['(-) CUSTOS DIRETOS', '- R$ 16.550,00', '33,9%'],
+        ['(=) LUCRO BRUTO', 'R$ 28.300,00', '58,1%'],
+        ['(-) DESPESAS OPERACIONAIS', '- R$ 8.200,00', '16,8%'],
+        ['(=) LUCRO OPERACIONAL', 'R$ 20.100,00', '41,2%'],
+        ['(-) IMPOSTOS', '- R$ 1.900,00', '3,9%'],
+        ['(=) LUCRO LÍQUIDO', 'R$ 18.200,00', '37,3%'],
+      ],
+      cabecalhoPDF: ['Descrição', 'Valor (R$)', 'AV (%)'],
+      // HTML exibido no modal
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Receita Bruta</div>
+            <div class="modal-kpi-value">R$ 48.750</div>
+            <div class="modal-kpi-sub">Março / 2025</div>
+          </div>
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Lucro Bruto</div>
+            <div class="modal-kpi-value">R$ 28.300</div>
+            <div class="modal-kpi-sub">Margem 58,1%</div>
+          </div>
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Lucro Operacional</div>
+            <div class="modal-kpi-value">R$ 20.100</div>
+            <div class="modal-kpi-sub">EBIT</div>
+          </div>
+          <div class="modal-kpi">
+            <div class="modal-kpi-label">Lucro Líquido</div>
+            <div class="modal-kpi-value" style="color:#16a34a">R$ 18.200</div>
+            <div class="modal-kpi-sub">Margem 37,3%</div>
+          </div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Descrição</th><th style="text-align:right">Valor</th><th style="text-align:right">AV%</th><th style="text-align:right">Mês Ant.</th></tr></thead>
+          <tbody>
+            <tr class="section-row"><td>RECEITA BRUTA</td><td style="text-align:right">R$ 48.750,00</td><td style="text-align:right">100%</td><td style="text-align:right">R$ 45.200,00</td></tr>
+            <tr class="indent"><td>Serviços preventivos</td><td style="text-align:right">R$ 28.400,00</td><td style="text-align:right">58,3%</td><td style="text-align:right">R$ 26.100,00</td></tr>
+            <tr class="indent"><td>Serviços corretivos</td><td style="text-align:right">R$ 12.150,00</td><td style="text-align:right">24,9%</td><td style="text-align:right">R$ 11.800,00</td></tr>
+            <tr class="indent"><td>Instalações e projetos</td><td style="text-align:right">R$ 8.200,00</td><td style="text-align:right">16,8%</td><td style="text-align:right">R$ 7.300,00</td></tr>
+            <tr class="section-row"><td>(-) DEDUÇÕES DA RECEITA</td><td style="text-align:right;color:#dc2626">- R$ 3.900,00</td><td style="text-align:right">8,0%</td><td style="text-align:right">R$ 3.600,00</td></tr>
+            <tr class="total-row"><td>(=) RECEITA LÍQUIDA</td><td style="text-align:right">R$ 44.850,00</td><td style="text-align:right">92,0%</td><td style="text-align:right">R$ 41.600,00</td></tr>
+            <tr class="section-row"><td>(-) CUSTOS DIRETOS (CPV)</td><td style="text-align:right;color:#dc2626">- R$ 16.550,00</td><td style="text-align:right">33,9%</td><td style="text-align:right">R$ 15.800,00</td></tr>
+            <tr class="indent"><td>Mão de obra técnica</td><td style="text-align:right">R$ 11.200,00</td><td style="text-align:right">23,0%</td><td style="text-align:right">R$ 10.800,00</td></tr>
+            <tr class="indent"><td>Peças e materiais</td><td style="text-align:right">R$ 5.350,00</td><td style="text-align:right">11,0%</td><td style="text-align:right">R$ 5.000,00</td></tr>
+            <tr class="total-row"><td>(=) LUCRO BRUTO</td><td style="text-align:right">R$ 28.300,00</td><td style="text-align:right">58,1%</td><td style="text-align:right">R$ 25.800,00</td></tr>
+            <tr class="section-row"><td>(-) DESPESAS OPERACIONAIS</td><td style="text-align:right;color:#dc2626">- R$ 8.200,00</td><td style="text-align:right">16,8%</td><td style="text-align:right">R$ 7.900,00</td></tr>
+            <tr class="indent"><td>Aluguel</td><td style="text-align:right">R$ 2.100,00</td><td style="text-align:right">4,3%</td><td style="text-align:right">R$ 2.100,00</td></tr>
+            <tr class="indent"><td>Energia elétrica</td><td style="text-align:right">R$ 1.320,00</td><td style="text-align:right">2,7%</td><td style="text-align:right">R$ 1.280,00</td></tr>
+            <tr class="indent"><td>Marketing e administrativo</td><td style="text-align:right">R$ 4.780,00</td><td style="text-align:right">9,8%</td><td style="text-align:right">R$ 4.520,00</td></tr>
+            <tr class="total-row"><td>(=) LUCRO OPERACIONAL (EBIT)</td><td style="text-align:right">R$ 20.100,00</td><td style="text-align:right">41,2%</td><td style="text-align:right">R$ 17.900,00</td></tr>
+            <tr class="section-row"><td>(-) IMPOSTOS (Simples Nacional)</td><td style="text-align:right;color:#dc2626">- R$ 1.900,00</td><td style="text-align:right">3,9%</td><td style="text-align:right">R$ 1.750,00</td></tr>
+            <tr class="total-row" style="font-size:14px"><td>(=) LUCRO LÍQUIDO</td><td style="text-align:right;color:#16a34a">R$ 18.200,00</td><td style="text-align:right;color:#16a34a">37,3%</td><td style="text-align:right">R$ 16.150,00</td></tr>
+          </tbody>
+        </table>
+      `
+    },
+
+    // ── 2. Ordens de Serviço ─────────────────────────────
+    os: {
+      titulo: 'Ordens de Serviço – Março/2025',
+      subtitulo: '46 OS no período',
+      icone: 'fa fa-clipboard-list',
+      cor: '#0891b2',
+      bgIcone: '#ecfeff',
+      dadosPDF: [
+        ['#0043','Condomínio Verde Park','Ricardo Souza','Preventiva','21/03/2025','Aberta'],
+        ['#0042','Hotel Garden Suites','Felipe Torres','Preventiva','20/03/2025','Finalizada'],
+        ['#0041','Clínica Vida Saudável','Marcos Lima','Corretiva','19/03/2025','Finalizada'],
+        ['#0040','DataTech Soluções','Ana Beatriz','Instalação','18/03/2025','Finalizada'],
+        ['#0039','Superm. Bom Preço','Ricardo Souza','Preventiva','17/03/2025','Em andamento'],
+        ['#0038','Condomínio Verde Park','Felipe Torres','Corretiva','15/03/2025','Cancelada'],
+      ],
+      cabecalhoPDF: ['Nº OS','Cliente','Técnico','Tipo','Data','Status'],
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi"><div class="modal-kpi-label">Total OS</div><div class="modal-kpi-value">46</div><div class="modal-kpi-sub">No período</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Finalizadas</div><div class="modal-kpi-value" style="color:#16a34a">34</div><div class="modal-kpi-sub">73,9%</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Em andamento</div><div class="modal-kpi-value" style="color:#d97706">7</div><div class="modal-kpi-sub">15,2%</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Canceladas</div><div class="modal-kpi-value" style="color:#dc2626">5</div><div class="modal-kpi-sub">10,9%</div></div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Nº OS</th><th>Cliente</th><th>Técnico</th><th>Tipo</th><th>Data</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>#0043</strong></td><td>Condomínio Verde Park</td><td>Ricardo Souza</td><td>Preventiva</td><td>21/03/2025</td><td><span class="tag tag-blue">Aberta</span></td></tr>
+            <tr><td><strong>#0042</strong></td><td>Hotel Garden Suites</td><td>Felipe Torres</td><td>Preventiva</td><td>20/03/2025</td><td><span class="tag tag-green">Finalizada</span></td></tr>
+            <tr><td><strong>#0041</strong></td><td>Clínica Vida Saudável</td><td>Marcos Lima</td><td>Corretiva</td><td>19/03/2025</td><td><span class="tag tag-green">Finalizada</span></td></tr>
+            <tr><td><strong>#0040</strong></td><td>DataTech Soluções</td><td>Ana Beatriz</td><td>Instalação</td><td>18/03/2025</td><td><span class="tag tag-green">Finalizada</span></td></tr>
+            <tr><td><strong>#0039</strong></td><td>Superm. Bom Preço</td><td>Ricardo Souza</td><td>Preventiva</td><td>17/03/2025</td><td><span class="tag tag-orange">Em andamento</span></td></tr>
+            <tr><td><strong>#0038</strong></td><td>Condomínio Verde Park</td><td>Felipe Torres</td><td>Corretiva</td><td>15/03/2025</td><td><span class="tag tag-red">Cancelada</span></td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px;color:var(--texto-secundario);margin-top:12px">Exibindo 6 de 46 registros. Exporte o PDF para o relatório completo.</p>
+      `
+    },
+
+    // ── 3. Inadimplência ─────────────────────────────────
+    inadimplencia: {
+      titulo: 'Relatório de Inadimplência',
+      subtitulo: 'Março / 2025',
+      icone: 'fa fa-users',
+      cor: '#7c3aed',
+      bgIcone: '#f5f3ff',
+      dadosPDF: [
+        ['Hotel Garden Suites','F-0041','01/03/2025','10/03/2025','R$ 3.200,00','18 dias'],
+        ['Clínica Vida Saudável','F-0040','15/03/2025','01/03/2025','R$ 3.500,00','15 dias'],
+      ],
+      cabecalhoPDF: ['Cliente','Fatura','Emissão','Vencimento','Valor','Atraso'],
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi"><div class="modal-kpi-label">Total Vencido</div><div class="modal-kpi-value" style="color:#dc2626">R$ 6.700</div><div class="modal-kpi-sub">2 clientes</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Maior Atraso</div><div class="modal-kpi-value" style="color:#dc2626">18 dias</div><div class="modal-kpi-sub">Hotel Garden</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">% Inadimplência</div><div class="modal-kpi-value">4,2%</div><div class="modal-kpi-sub">Sobre faturamento</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Cobranças Enviadas</div><div class="modal-kpi-value" style="color:#16a34a">2</div><div class="modal-kpi-sub">Neste mês</div></div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Cliente</th><th>Fatura</th><th>Vencimento</th><th>Valor</th><th>Atraso</th><th>Ação</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Hotel Garden Suites</strong></td>
+              <td>F-0041</td><td>10/03/2025</td>
+              <td><strong style="color:#dc2626">R$ 3.200,00</strong></td>
+              <td><span class="tag tag-red">18 dias</span></td>
+              <td><button class="btn btn-primary btn-sm" onclick="showToast('Cobrança enviada!','success')"><i class="fa fa-paper-plane"></i> Cobrar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Clínica Vida Saudável</strong></td>
+              <td>F-0040</td><td>01/03/2025</td>
+              <td><strong style="color:#dc2626">R$ 3.500,00</strong></td>
+              <td><span class="tag tag-red">15 dias</span></td>
+              <td><button class="btn btn-primary btn-sm" onclick="showToast('Cobrança enviada!','success')"><i class="fa fa-paper-plane"></i> Cobrar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      `
+    },
+
+    // ── 4. Estoque ───────────────────────────────────────
+    estoque: {
+      titulo: 'Movimentação de Estoque',
+      subtitulo: 'Março / 2025',
+      icone: 'fa fa-boxes-stacked',
+      cor: '#d97706',
+      bgIcone: '#fffbeb',
+      dadosPDF: [
+        ['Filtro de ar G4','un','50','12','5','43','R$ 45,00','R$ 1.935,00'],
+        ['Gás R-410A (kg)','kg','30','8','0','22','R$ 120,00','R$ 2.640,00'],
+        ['Dreno flexível (m)','mt','100','0','35','65','R$ 85,00','R$ 5.525,00'],
+        ['Suporte galvanizado','un','20','10','8','22','R$ 38,00','R$ 836,00'],
+        ['Placa eletrônica Samsung','un','5','2','3','4','R$ 210,00','R$ 840,00'],
+      ],
+      cabecalhoPDF: ['Item','Un','Est. Inicial','Entradas','Saídas','Est. Final','Vl. Unit.','Vl. Total'],
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi"><div class="modal-kpi-label">Itens em Estoque</div><div class="modal-kpi-value">18</div><div class="modal-kpi-sub">Tipos de produto</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Valor Total</div><div class="modal-kpi-value">R$ 11.776</div><div class="modal-kpi-sub">Em estoque</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Entradas</div><div class="modal-kpi-value" style="color:#16a34a">32 un</div><div class="modal-kpi-sub">No período</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Abaixo do Mínimo</div><div class="modal-kpi-value" style="color:#dc2626">2</div><div class="modal-kpi-sub">Repor urgente</div></div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Item</th><th>Un</th><th>Est. Inicial</th><th>Entradas</th><th>Saídas</th><th>Est. Final</th><th style="text-align:right">Vl. Total</th></tr></thead>
+          <tbody>
+            <tr><td>Filtro de ar G4</td><td>un</td><td>50</td><td style="color:#16a34a">+12</td><td style="color:#dc2626">-5</td><td><strong>43</strong></td><td style="text-align:right">R$ 1.935,00</td></tr>
+            <tr><td>Gás R-410A (kg)</td><td>kg</td><td>30</td><td style="color:#16a34a">+8</td><td style="color:#dc2626">0</td><td><strong>22</strong></td><td style="text-align:right">R$ 2.640,00</td></tr>
+            <tr><td>Dreno flexível (m)</td><td>mt</td><td>100</td><td style="color:#16a34a">0</td><td style="color:#dc2626">-35</td><td><strong>65</strong></td><td style="text-align:right">R$ 5.525,00</td></tr>
+            <tr><td>Suporte galvanizado</td><td>un</td><td>20</td><td style="color:#16a34a">+10</td><td style="color:#dc2626">-8</td><td><strong>22</strong></td><td style="text-align:right">R$ 836,00</td></tr>
+            <tr><td>Placa eletrônica Samsung</td><td>un</td><td>5</td><td style="color:#16a34a">+2</td><td style="color:#dc2626">-3</td><td><strong style="color:#dc2626">4 ⚠</strong></td><td style="text-align:right">R$ 840,00</td></tr>
+          </tbody>
+        </table>
+      `
+    },
+
+    // ── 5. Produtividade da Equipe ───────────────────────
+    equipe: {
+      titulo: 'Produtividade da Equipe',
+      subtitulo: 'Março / 2025',
+      icone: 'fa fa-users-gear',
+      cor: '#dc2626',
+      bgIcone: '#fef2f2',
+      dadosPDF: [
+        ['Ricardo Souza','12','98%','4h20','4,9','0%'],
+        ['Felipe Torres','11','95%','4h45','4,7','2%'],
+        ['Marcos Lima','9','91%','5h10','4,5','5%'],
+        ['Ana Beatriz Costa','6','100%','3h50','5,0','0%'],
+      ],
+      cabecalhoPDF: ['Técnico','OS Concluídas','Taxa Conclusão','Tempo Médio','Avaliação','Retrabalho'],
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi"><div class="modal-kpi-label">Total OS</div><div class="modal-kpi-value">38</div><div class="modal-kpi-sub">Concluídas no mês</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Tempo Médio</div><div class="modal-kpi-value">4h31</div><div class="modal-kpi-sub">Por OS</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Avaliação Média</div><div class="modal-kpi-value" style="color:#16a34a">4,8 ★</div><div class="modal-kpi-sub">Satisfação cliente</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Retrabalho</div><div class="modal-kpi-value" style="color:#d97706">1,8%</div><div class="modal-kpi-sub">Meta: abaixo de 5%</div></div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Técnico</th><th style="text-align:center">OS Conc.</th><th style="text-align:center">Taxa</th><th style="text-align:center">Tempo Médio</th><th style="text-align:center">Avaliação</th><th style="text-align:center">Retrabalho</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Ricardo Souza</strong></td><td style="text-align:center">12</td><td style="text-align:center"><span class="tag tag-green">98%</span></td><td style="text-align:center">4h 20min</td><td style="text-align:center">⭐ 4,9</td><td style="text-align:center"><span class="tag tag-green">0%</span></td></tr>
+            <tr><td><strong>Felipe Torres</strong></td><td style="text-align:center">11</td><td style="text-align:center"><span class="tag tag-green">95%</span></td><td style="text-align:center">4h 45min</td><td style="text-align:center">⭐ 4,7</td><td style="text-align:center"><span class="tag tag-orange">2%</span></td></tr>
+            <tr><td><strong>Marcos Lima</strong></td><td style="text-align:center">9</td><td style="text-align:center"><span class="tag tag-orange">91%</span></td><td style="text-align:center">5h 10min</td><td style="text-align:center">⭐ 4,5</td><td style="text-align:center"><span class="tag tag-orange">5%</span></td></tr>
+            <tr><td><strong>Ana Beatriz Costa</strong></td><td style="text-align:center">6</td><td style="text-align:center"><span class="tag tag-green">100%</span></td><td style="text-align:center">3h 50min</td><td style="text-align:center">⭐ 5,0</td><td style="text-align:center"><span class="tag tag-green">0%</span></td></tr>
+          </tbody>
+        </table>
+      `
+    },
+
+    // ── 6. Carteira de Contratos ─────────────────────────
+    contratos: {
+      titulo: 'Carteira de Contratos',
+      subtitulo: 'Março / 2025',
+      icone: 'fa fa-file-signature',
+      cor: '#0284c7',
+      bgIcone: '#f0f9ff',
+      dadosPDF: [
+        ['CT-001','Condomínio Verde Park','Prev. Mensal','01/01/2024','31/12/2025','R$ 2.400,00','Ativo'],
+        ['CT-002','Hotel Garden Suites','Full Mensal','01/04/2024','31/03/2025','R$ 5.800,00','A vencer'],
+        ['CT-003','DataTech Soluções','Prev. Trimestral','01/07/2024','30/06/2025','R$ 1.200,00','Ativo'],
+        ['CT-004','Superm. Bom Preço','Corretiva + Prev.','01/02/2025','31/01/2026','R$ 3.600,00','Ativo'],
+      ],
+      cabecalhoPDF: ['Nº','Cliente','Tipo','Início','Vencimento','Valor/Mês','Status'],
+      html: () => `
+        <div class="modal-kpis">
+          <div class="modal-kpi"><div class="modal-kpi-label">Contratos Ativos</div><div class="modal-kpi-value">22</div><div class="modal-kpi-sub">Vigentes</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Receita Recorrente</div><div class="modal-kpi-value">R$ 34.800</div><div class="modal-kpi-sub">MRR</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Vencem em 30 dias</div><div class="modal-kpi-value" style="color:#d97706">3</div><div class="modal-kpi-sub">Renovar</div></div>
+          <div class="modal-kpi"><div class="modal-kpi-label">Encerrados (mês)</div><div class="modal-kpi-value" style="color:#dc2626">1</div><div class="modal-kpi-sub">Rescisão</div></div>
+        </div>
+        <table class="modal-table">
+          <thead><tr><th>Nº</th><th>Cliente</th><th>Tipo</th><th>Vencimento</th><th style="text-align:right">Valor/Mês</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>CT-001</strong></td><td>Condomínio Verde Park</td><td>Prev. Mensal</td><td>31/12/2025</td><td style="text-align:right">R$ 2.400,00</td><td><span class="tag tag-green">Ativo</span></td></tr>
+            <tr><td><strong>CT-002</strong></td><td>Hotel Garden Suites</td><td>Full Mensal</td><td>31/03/2025</td><td style="text-align:right">R$ 5.800,00</td><td><span class="tag tag-orange">A vencer</span></td></tr>
+            <tr><td><strong>CT-003</strong></td><td>DataTech Soluções</td><td>Prev. Trimestral</td><td>30/06/2025</td><td style="text-align:right">R$ 1.200,00</td><td><span class="tag tag-green">Ativo</span></td></tr>
+            <tr><td><strong>CT-004</strong></td><td>Superm. Bom Preço</td><td>Corretiva + Prev.</td><td>31/01/2026</td><td style="text-align:right">R$ 3.600,00</td><td><span class="tag tag-green">Ativo</span></td></tr>
+          </tbody>
+        </table>
+      `
+    }
+
+  }; // fim do objeto relatorios
+
+
+  // ══════════════════════════════════════════════════════
+  // FUNÇÕES DE CONTROLE DO MODAL
+  // ══════════════════════════════════════════════════════
+
+  // Abre o modal e preenche com o conteúdo do relatório clicado
+  function abrirModal(id) {
+    const r = relatorios[id];
+    if (!r) return;
+
+    modalAtual = id; // salva qual está aberto para o botão PDF usar
+
+    // Preenche cabeçalho do modal
+    document.getElementById('modalTitle').textContent    = r.titulo;
+    document.getElementById('modalSubtitle').textContent = r.subtitulo;
+
+    // Ícone colorido no cabeçalho
+    const iconeEl = document.getElementById('modalIcon');
+    iconeEl.innerHTML = `<i class="${r.icone}" style="color:${r.cor}"></i>`;
+    iconeEl.style.background = r.bgIcone;
+
+    // Injeta o HTML do relatório no corpo do modal
+    document.getElementById('modalBody').innerHTML = r.html();
+
+    // Abre o overlay
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden'; // trava o scroll da página
+  }
+
+  // Fecha o modal
+  function fecharModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = ''; // libera o scroll
+    modalAtual = null;
+  }
+
+  // Fecha ao clicar fora da caixa (no overlay escuro)
+  function fecharModalFora(event) {
+    if (event.target === document.getElementById('modalOverlay')) {
+      fecharModal();
+    }
+  }
+
+
+  // ══════════════════════════════════════════════════════
+  // GERAÇÃO DE PDF COM jsPDF + AutoTable
+  // ══════════════════════════════════════════════════════
+
+  // Exporta o relatório atualmente aberto no modal
+  function exportarPDFAtual() {
+    if (modalAtual) exportarPDF(modalAtual);
+  }
+
+  // Exporta qualquer relatório pelo id (pode ser chamado sem abrir o modal)
+  function exportarPDF(id) {
+    const r = relatorios[id];
+    if (!r) return;
+
+    // jsPDF está disponível globalmente via CDN
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+    // ── Cabeçalho do PDF ──
+    doc.setFillColor(22, 101, 52);          // verde escuro (#166534)
+    doc.rect(0, 0, 297, 22, 'F');           // faixa verde no topo
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('AR Ecológico – ERP', 14, 10);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(r.titulo, 14, 17);
+
+    // Data de geração no canto direito
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    doc.text(`Gerado em: ${hoje}`, 283, 10, { align: 'right' });
+    doc.text(r.subtitulo, 283, 17, { align: 'right' });
+
+    // ── Tabela de dados ──
+    doc.autoTable({
+      head: [r.cabecalhoPDF],        // cabeçalho da tabela
+      body: r.dadosPDF,              // linhas de dados
+      startY: 28,                    // começa abaixo do cabeçalho verde
+      styles: {
+        font: 'helvetica',
+        fontSize: 9,
+        cellPadding: 4,
+      },
+      headStyles: {
+        fillColor: [22, 101, 52],    // verde escuro no cabeçalho
+        textColor: 255,
+        fontStyle: 'bold',
+      },
+      alternateRowStyles: {
+        fillColor: [240, 253, 244],  // verde clarissimo nas linhas pares
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    // ── Rodapé ──
+    const totalPaginas = doc.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i);
+      doc.setTextColor(150);
+      doc.setFontSize(8);
+      doc.text(
+        `AR Ecológico ERP  |  ${r.titulo}  |  Página ${i} de ${totalPaginas}`,
+        148.5, 205, { align: 'center' }
+      );
+    }
+
+    // ── Salva o arquivo com nome descritivo ──
+    doc.save(`relatorio-${id}-${hoje.replace(/\//g,'-')}.pdf`);
+    showToast('PDF gerado com sucesso!', 'success');
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – DRE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Cards de resumo -->
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Receita Bruta</div>
+        <div class="summary-card-value">R$ 48.750</div>
+        <div class="summary-card-sub">Março / 2025</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Lucro Bruto</div>
+        <div class="summary-card-value">R$ 28.300</div>
+        <div class="summary-card-sub">Após custos diretos</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Lucro Operacional</div>
+        <div class="summary-card-value">R$ 20.100</div>
+        <div class="summary-card-sub">Após despesas fixas</div>
+      </div>
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Lucro Líquido</div>
+        <div class="summary-card-value">R$ 18.200</div>
+        <div class="summary-card-sub">Margem de 37,3%</div>
+      </div>
+    </div>
+
+    <!-- Tabela DRE -->
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-receipt"></i> DRE – Demonstração do Resultado</h2>
+        <div class="table-filters">
+          <select class="filter-input" style="min-width:160px">
+            <option>Março / 2025</option>
+            <option>Fevereiro / 2025</option>
+            <option>Janeiro / 2025</option>
+          </select>
+          <select class="filter-input" style="min-width:140px">
+            <option>Mensal</option>
+            <option>Trimestral</option>
+            <option>Anual</option>
+          </select>
+          <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Exportar PDF</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 24px">
+        <table class="data-table" id="tabelaDRE">
+          <thead>
+            <tr>
+              <th style="width:50%">Descrição</th>
+              <th style="text-align:right">Valor (R$)</th>
+              <th style="text-align:right">AV (%)</th>
+              <th style="text-align:right">Mês Anterior</th>
+              <th style="text-align:right">Variação</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- RECEITA BRUTA -->
+            <tr style="background:var(--fundo-card);">
+              <td><strong style="color:var(--verde-escuro)">RECEITA BRUTA</strong></td>
+              <td style="text-align:right"><strong>R$ 48.750,00</strong></td>
+              <td style="text-align:right"><strong>100%</strong></td>
+              <td style="text-align:right">R$ 45.200,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 7,9%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Serviços de manutenção preventiva</td>
+              <td style="text-align:right">R$ 28.400,00</td>
+              <td style="text-align:right">58,3%</td>
+              <td style="text-align:right">R$ 26.100,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 8,8%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Serviços corretivos</td>
+              <td style="text-align:right">R$ 12.150,00</td>
+              <td style="text-align:right">24,9%</td>
+              <td style="text-align:right">R$ 11.800,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 3,0%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Instalações e projetos</td>
+              <td style="text-align:right">R$ 8.200,00</td>
+              <td style="text-align:right">16,8%</td>
+              <td style="text-align:right">R$ 7.300,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 12,3%</span></td>
+            </tr>
+
+            <!-- DEDUÇÕES -->
+            <tr style="background:var(--fundo-card);">
+              <td><strong style="color:#b91c1c">(-) DEDUÇÕES DA RECEITA</strong></td>
+              <td style="text-align:right"><strong style="color:#ef4444">- R$ 3.900,00</strong></td>
+              <td style="text-align:right">8,0%</td>
+              <td style="text-align:right">R$ 3.600,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 8,3%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Impostos sobre serviços (ISS 5%)</td>
+              <td style="text-align:right">R$ 2.437,50</td>
+              <td style="text-align:right">5,0%</td>
+              <td style="text-align:right">R$ 2.260,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 7,9%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Devoluções e descontos</td>
+              <td style="text-align:right">R$ 1.462,50</td>
+              <td style="text-align:right">3,0%</td>
+              <td style="text-align:right">R$ 1.340,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 9,1%</span></td>
+            </tr>
+
+            <!-- RECEITA LÍQUIDA -->
+            <tr style="background:#f0fdf4; border-top: 2px solid var(--verde-claro);">
+              <td><strong style="color:var(--verde-escuro)">(=) RECEITA LÍQUIDA</strong></td>
+              <td style="text-align:right"><strong style="color:var(--verde-escuro)">R$ 44.850,00</strong></td>
+              <td style="text-align:right"><strong>92,0%</strong></td>
+              <td style="text-align:right">R$ 41.600,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 7,8%</span></td>
+            </tr>
+
+            <!-- CUSTOS DIRETOS -->
+            <tr style="background:var(--fundo-card);">
+              <td><strong style="color:#b91c1c">(-) CUSTOS DIRETOS (CPV)</strong></td>
+              <td style="text-align:right"><strong style="color:#ef4444">- R$ 16.550,00</strong></td>
+              <td style="text-align:right">33,9%</td>
+              <td style="text-align:right">R$ 15.800,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 4,7%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Mão de obra técnica</td>
+              <td style="text-align:right">R$ 11.200,00</td>
+              <td style="text-align:right">23,0%</td>
+              <td style="text-align:right">R$ 10.800,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 3,7%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Peças e materiais</td>
+              <td style="text-align:right">R$ 5.350,00</td>
+              <td style="text-align:right">11,0%</td>
+              <td style="text-align:right">R$ 5.000,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 7,0%</span></td>
+            </tr>
+
+            <!-- LUCRO BRUTO -->
+            <tr style="background:#f0fdf4; border-top: 2px solid var(--verde-claro);">
+              <td><strong style="color:var(--verde-escuro)">(=) LUCRO BRUTO</strong></td>
+              <td style="text-align:right"><strong style="color:var(--verde-escuro)">R$ 28.300,00</strong></td>
+              <td style="text-align:right"><strong>58,1%</strong></td>
+              <td style="text-align:right">R$ 25.800,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 9,7%</span></td>
+            </tr>
+
+            <!-- DESPESAS OPERACIONAIS -->
+            <tr style="background:var(--fundo-card);">
+              <td><strong style="color:#b91c1c">(-) DESPESAS OPERACIONAIS</strong></td>
+              <td style="text-align:right"><strong style="color:#ef4444">- R$ 8.200,00</strong></td>
+              <td style="text-align:right">16,8%</td>
+              <td style="text-align:right">R$ 7.900,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 3,8%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Aluguel</td>
+              <td style="text-align:right">R$ 2.100,00</td>
+              <td style="text-align:right">4,3%</td>
+              <td style="text-align:right">R$ 2.100,00</td>
+              <td style="text-align:right"><span style="color:var(--texto-secundario)">— 0%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Energia elétrica</td>
+              <td style="text-align:right">R$ 1.320,00</td>
+              <td style="text-align:right">2,7%</td>
+              <td style="text-align:right">R$ 1.280,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 3,1%</span></td>
+            </tr>
+            <tr>
+              <td style="padding-left:32px; color:var(--texto-secundario)">Marketing e administrativo</td>
+              <td style="text-align:right">R$ 4.780,00</td>
+              <td style="text-align:right">9,8%</td>
+              <td style="text-align:right">R$ 4.520,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 5,7%</span></td>
+            </tr>
+
+            <!-- LUCRO OPERACIONAL -->
+            <tr style="background:#f0fdf4; border-top: 2px solid var(--verde-claro);">
+              <td><strong style="color:var(--verde-escuro)">(=) LUCRO OPERACIONAL (EBIT)</strong></td>
+              <td style="text-align:right"><strong style="color:var(--verde-escuro)">R$ 20.100,00</strong></td>
+              <td style="text-align:right"><strong>41,2%</strong></td>
+              <td style="text-align:right">R$ 17.900,00</td>
+              <td style="text-align:right"><span style="color:var(--verde-claro)">▲ 12,3%</span></td>
+            </tr>
+
+            <!-- IMPOSTOS -->
+            <tr style="background:var(--fundo-card);">
+              <td><strong style="color:#b91c1c">(-) IMPOSTOS S/ LUCRO (Simples Nacional)</strong></td>
+              <td style="text-align:right"><strong style="color:#ef4444">- R$ 1.900,00</strong></td>
+              <td style="text-align:right">3,9%</td>
+              <td style="text-align:right">R$ 1.750,00</td>
+              <td style="text-align:right"><span style="color:#ef4444">▼ 8,6%</span></td>
+            </tr>
+
+            <!-- LUCRO LÍQUIDO -->
+            <tr style="background:#dcfce7; border-top: 3px solid var(--verde-escuro);">
+              <td><strong style="color:var(--verde-escuro); font-size:15px;">(=) LUCRO LÍQUIDO</strong></td>
+              <td style="text-align:right"><strong style="color:var(--verde-escuro); font-size:15px;">R$ 18.200,00</strong></td>
+              <td style="text-align:right"><strong style="color:var(--verde-escuro)">37,3%</strong></td>
+              <td style="text-align:right"><strong>R$ 16.150,00</strong></td>
+              <td style="text-align:right"><span style="color:var(--verde-claro); font-weight:700;">▲ 12,7%</span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  // Inicializa o menu com a seção "financeiro" ativa
+  initLayout('financeiro', 'DRE – Demonstração do Resultado', 'fa-receipt');
+
+  $(document).ready(function () {
+    animateCards('.summary-card');
+  });
+</script>
+</body>
+</html>

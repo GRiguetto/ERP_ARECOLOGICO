@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Nova OS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Formulário principal -->
+    <div class="form-card">
+      <div class="form-card-title">
+        <i class="fa fa-clipboard-list"></i> Dados da Ordem de Serviço
+      </div>
+
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">Número da OS</label>
+          <input type="text" class="form-control" value="#0043" readonly style="background:#f0f4f1;color:#6b7280">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data de Abertura</label>
+          <input type="date" class="form-control" value="2025-03-21">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Previsão de Conclusão</label>
+          <input type="date" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Cliente *</label>
+          <select class="form-control">
+            <option value="">— Selecione o cliente —</option>
+            <option>Condomínio Verde Park</option>
+            <option>Supermercado Bom Preço</option>
+            <option>Clínica Vida Saudável</option>
+            <option>Escritório DataTech Ltda.</option>
+            <option>Hotel Garden Suites</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Técnico Responsável *</label>
+          <select class="form-control">
+            <option value="">— Selecione o técnico —</option>
+            <option>Ricardo Souza</option>
+            <option>Marcos Lima</option>
+            <option>Felipe Torres</option>
+            <option>Ana Beatriz Costa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">Tipo de Serviço *</label>
+          <select class="form-control">
+            <option value="">— Selecione —</option>
+            <option>Preventiva</option>
+            <option>Corretiva</option>
+            <option>Instalação</option>
+            <option>Desinstalação</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prioridade</label>
+          <select class="form-control">
+            <option>Normal</option>
+            <option>Alta</option>
+            <option>Urgente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control">
+            <option>Aberta</option>
+            <option>Em andamento</option>
+            <option>Finalizada</option>
+            <option>Cancelada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Endereço do Serviço</label>
+          <input type="text" class="form-control" placeholder="Rua, número, bairro">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade / UF</label>
+          <input type="text" class="form-control" placeholder="São José do Rio Preto / SP">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Descrição do Problema / Serviço</label>
+          <textarea class="form-control" rows="3" placeholder="Descreva o serviço a ser realizado, problema relatado pelo cliente…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipamentos -->
+    <div class="form-card">
+      <div class="form-card-title">
+        <i class="fa fa-wind"></i> Equipamentos
+      </div>
+
+      <table class="data-table" id="tabelaEquip">
+        <thead>
+          <tr>
+            <th>Equipamento</th>
+            <th>Marca / Modelo</th>
+            <th>BTU</th>
+            <th>Nº Série</th>
+            <th>Localização</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="equipBody">
+          <tr>
+            <td><input type="text" class="form-control" placeholder="Split, Cassete…" style="min-width:120px"></td>
+            <td><input type="text" class="form-control" placeholder="LG S4-Q09WA"></td>
+            <td><input type="text" class="form-control" placeholder="9.000"></td>
+            <td><input type="text" class="form-control" placeholder="SN123456"></td>
+            <td><input type="text" class="form-control" placeholder="Sala 01"></td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fa fa-trash"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding-top:12px">
+        <button class="btn btn-secondary btn-sm" onclick="addEquipRow()">
+          <i class="fa fa-plus"></i> Adicionar Equipamento
+        </button>
+      </div>
+    </div>
+
+    <!-- Peças / Materiais -->
+    <div class="form-card">
+      <div class="form-card-title">
+        <i class="fa fa-boxes-stacked"></i> Peças e Materiais Utilizados
+      </div>
+
+      <table class="data-table" id="tabelaPecas">
+        <thead>
+          <tr>
+            <th>Item (Estoque)</th>
+            <th>Qtd</th>
+            <th>Valor Unit.</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="pecasBody">
+          <tr>
+            <td>
+              <select class="form-control" style="min-width:200px" onchange="updateSubtotal(this)">
+                <option value="">— Selecione o item —</option>
+                <option value="45.00">Filtro de ar G4</option>
+                <option value="120.00">Gás Refrigerante R-410A (kg)</option>
+                <option value="85.00">Dreno flexível (metro)</option>
+                <option value="38.00">Suporte externo galvanizado</option>
+                <option value="210.00">Placa eletrônica Samsung</option>
+              </select>
+            </td>
+            <td><input type="number" class="form-control" value="1" min="1" style="width:70px" onchange="updateSubtotal(this)"></td>
+            <td><input type="text" class="form-control valor-unit" value="R$ 0,00" readonly style="width:110px;background:#f0f4f1"></td>
+            <td><input type="text" class="form-control subtotal" value="R$ 0,00" readonly style="width:110px;background:#f0f4f1"></td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fa fa-trash"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px">
+        <button class="btn btn-secondary btn-sm" onclick="addPecaRow()">
+          <i class="fa fa-plus"></i> Adicionar Item
+        </button>
+        <div style="font-size:14px; font-weight:600; color:var(--texto-principal)">
+          Total Materiais: <span id="totalMateriais" style="color:var(--verde-claro)">R$ 0,00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Valores -->
+    <div class="form-card">
+      <div class="form-card-title">
+        <i class="fa fa-money-bill-wave"></i> Valores e Cobrança
+      </div>
+
+      <div class="form-row cols-4">
+        <div class="form-group">
+          <label class="form-label">Mão de Obra (R$)</label>
+          <input type="text" class="form-control" id="maoDeObra" placeholder="0,00" oninput="calcularTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Materiais (R$)</label>
+          <input type="text" class="form-control" id="totalMateriaisInput" value="0,00" readonly style="background:#f0f4f1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Desconto (R$)</label>
+          <input type="text" class="form-control" id="desconto" placeholder="0,00" oninput="calcularTotal()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Geral (R$)</label>
+          <input type="text" class="form-control" id="totalGeral" value="0,00" readonly
+            style="background:#f0fdf4;border-color:var(--verde-claro);font-weight:700;color:var(--verde-escuro)">
+        </div>
+      </div>
+
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento</label>
+          <select class="form-control">
+            <option>— Selecione —</option>
+            <option>Boleto Bancário</option>
+            <option>PIX</option>
+            <option>Cartão de Crédito</option>
+            <option>Contrato (recorrente)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Vencimento</label>
+          <input type="date" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Observações -->
+    <div class="form-card">
+      <div class="form-card-title">
+        <i class="fa fa-note-sticky"></i> Observações e Assinatura
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Observações internas (não visível ao cliente)</label>
+          <textarea class="form-control" rows="2" placeholder="Anotações da equipe técnica…"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Observações para o cliente / laudo</label>
+          <textarea class="form-control" rows="2" placeholder="Recomendações, garantias, próximas manutenções…"></textarea>
+        </div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Assinatura do Cliente</label>
+          <div style="border:1.5px dashed #d1e8d5; border-radius:8px; height:80px; display:flex; align-items:center; justify-content:center; color:#a1b5a6; font-size:13px; cursor:pointer; background:#f7fdf9">
+            <i class="fa fa-signature" style="margin-right:8px"></i> Clique para coletar assinatura digital
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Foto do Serviço</label>
+          <div style="border:1.5px dashed #d1e8d5; border-radius:8px; height:80px; display:flex; align-items:center; justify-content:center; color:#a1b5a6; font-size:13px; cursor:pointer; background:#f7fdf9">
+            <i class="fa fa-camera" style="margin-right:8px"></i> Anexar foto (JPG, PNG)
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a th:href="@{/os/lista}" class="btn btn-secondary"><i class="fa fa-xmark"></i> Cancelar</a>
+        <button class="btn btn-warning" onclick="salvarRascunho()"><i class="fa fa-floppy-disk"></i> Salvar Rascunho</button>
+        <button class="btn btn-primary" onclick="salvarOS()"><i class="fa fa-check"></i> Salvar OS</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('os', 'Nova Ordem de Serviço', 'fa-plus');
+
+  const precos = { 'Filtro de ar G4': 45, 'Gás Refrigerante R-410A (kg)': 120, 'Dreno flexível (metro)': 85, 'Suporte externo galvanizado': 38, 'Placa eletrônica Samsung': 210 };
+
+  function addEquipRow() {
+    const tr = `<tr>
+      <td><input type="text" class="form-control" placeholder="Split, Cassete…" style="min-width:120px"></td>
+      <td><input type="text" class="form-control" placeholder="LG S4-Q09WA"></td>
+      <td><input type="text" class="form-control" placeholder="9.000"></td>
+      <td><input type="text" class="form-control" placeholder="SN123456"></td>
+      <td><input type="text" class="form-control" placeholder="Sala 01"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fa fa-trash"></i></button></td>
+    </tr>`;
+    document.getElementById('equipBody').insertAdjacentHTML('beforeend', tr);
+  }
+
+  function addPecaRow() {
+    const tr = `<tr>
+      <td><select class="form-control" style="min-width:200px" onchange="updateSubtotal(this)">
+        <option value="">— Selecione o item —</option>
+        <option value="45.00">Filtro de ar G4</option>
+        <option value="120.00">Gás Refrigerante R-410A (kg)</option>
+        <option value="85.00">Dreno flexível (metro)</option>
+        <option value="38.00">Suporte externo galvanizado</option>
+        <option value="210.00">Placa eletrônica Samsung</option>
+      </select></td>
+      <td><input type="number" class="form-control" value="1" min="1" style="width:70px" onchange="updateSubtotal(this)"></td>
+      <td><input type="text" class="form-control valor-unit" value="R$ 0,00" readonly style="width:110px;background:#f0f4f1"></td>
+      <td><input type="text" class="form-control subtotal" value="R$ 0,00" readonly style="width:110px;background:#f0f4f1"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="removeRow(this)"><i class="fa fa-trash"></i></button></td>
+    </tr>`;
+    document.getElementById('pecasBody').insertAdjacentHTML('beforeend', tr);
+  }
+
+  function removeRow(btn) {
+    btn.closest('tr').remove();
+    recalcularTotalMateriais();
+  }
+
+  function updateSubtotal(el) {
+    const row = el.closest('tr');
+    const sel = row.querySelector('select');
+    const qty = parseFloat(row.querySelector('input[type=number]').value) || 0;
+    const unit = parseFloat(sel.value) || 0;
+    const sub = unit * qty;
+    row.querySelector('.valor-unit').value = formatarMoeda(unit);
+    row.querySelector('.subtotal').value = formatarMoeda(sub);
+    recalcularTotalMateriais();
+  }
+
+  function recalcularTotalMateriais() {
+    let total = 0;
+    document.querySelectorAll('#pecasBody .subtotal').forEach(inp => {
+      total += parseFloat(inp.value.replace('R$','').replace(/\./g,'').replace(',','.').trim()) || 0;
+    });
+    document.getElementById('totalMateriais').textContent = formatarMoeda(total);
+    document.getElementById('totalMateriaisInput').value = total.toFixed(2).replace('.',',');
+    calcularTotal();
+  }
+
+  function calcularTotal() {
+    const mdo = parseFloat((document.getElementById('maoDeObra').value||'0').replace(',','.')) || 0;
+    const mat = parseFloat((document.getElementById('totalMateriaisInput').value||'0').replace(',','.')) || 0;
+    const desc= parseFloat((document.getElementById('desconto').value||'0').replace(',','.')) || 0;
+    document.getElementById('totalGeral').value = formatarMoeda(mdo + mat - desc);
+  }
+
+  function salvarOS() {
+    showToast('OS #0043 salva com sucesso!', 'success');
+    setTimeout(() => window.location.href = 'os-lista.html', 1500);
+  }
+
+  function salvarRascunho() {
+    showToast('Rascunho salvo.', 'warn');
+  }
+</script>
+</body>
+</html>

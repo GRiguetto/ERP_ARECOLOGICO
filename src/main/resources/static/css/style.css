@@ -1,0 +1,849 @@
+/* ================================================================
+   STYLE.CSS – AR ECOLÓGICO ERP
+   Sistema de gestão de manutenção e instalação de ar-condicionado
+   
+   ESTRUTURA DO ARQUIVO:
+   1. Variáveis CSS (Design Tokens)
+   2. Reset e Base
+   3. Menu Lateral (Sidebar)
+   4. Topbar (cabeçalho interno)
+   5. Área Principal (Main)
+   6. Cards KPI
+   7. Tabela de OS
+   8. Alertas
+   9. Responsividade (mobile)
+================================================================ */
+
+
+/* ================================================================
+   1. VARIÁVEIS CSS (Custom Properties / Design Tokens)
+   
+   Variáveis CSS são valores reutilizáveis declarados em :root
+   (equivalente a "variáveis globais" no CSS).
+   
+   Vantagem: mudar uma cor aqui atualiza TODA a interface.
+   Sintaxe de uso: var(--nome-da-variavel)
+================================================================ */
+:root {
+	/* ── Paleta de cores principal ── */
+	--verde-escuro:    #0a4a1a;   /* fundo do menu lateral */
+	--verde-medio:     #0d6b26;   /* hover e itens ativos */
+	--verde-claro:     #16a34a;   /* destaque / botões primários */
+	--verde-acento:    #22c55e;   /* ícones e badges positivos */
+	--verde-submenu:   #0b5c20;   /* fundo dos submenus */
+
+	/* ── Cores de fundo ── */
+	--bg-pagina:       #f0f4f1;   /* fundo geral da página */
+	--bg-card:         #ffffff;   /* fundo dos cards */
+	--bg-topbar:       #ffffff;   /* fundo da barra superior */
+
+	/* ── Texto ── */
+	--texto-principal: #1a2e22;   /* títulos e textos escuros */
+	--texto-secundario:#4b5e52;   /* rótulos e textos auxiliares */
+	--texto-menu:      #d4edd8;   /* texto no menu lateral */
+
+	/* ── Cores de status / alertas ── */
+	--cor-sucesso:     #16a34a;
+	--cor-aviso:       #d97706;
+	--cor-erro:        #dc2626;
+	--cor-neutro:      #6b7280;
+
+	/* ── Sombras ── */
+	--sombra-card:     0 2px 8px rgba(0,0,0,0.08);
+	--sombra-hover:    0 6px 20px rgba(10,74,26,0.15);
+
+	/* ── Bordas e raios ── */
+	--radius-card:     12px;
+	--radius-badge:    6px;
+	--radius-btn:      8px;
+
+	/* ── Dimensões do menu ── */
+	--sidebar-width:   240px;
+
+	/* ── Tipografia ── */
+	--fonte-display:   'Syne', sans-serif;    /* títulos, marca */
+	--fonte-corpo:     'DM Sans', sans-serif; /* textos gerais */
+
+	/* ── Transições ── */
+	--transicao:       0.25s ease;
+}
+
+
+/* ================================================================
+   2. RESET E BASE
+   
+   Reset: remove margens/paddings padrão do navegador para ter
+   controle total sobre o layout.
+   box-sizing: border-box faz o padding ser incluído na largura total
+   do elemento (evita transbordamentos inesperados).
+================================================================ */
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+/* Define a fonte base e cor de fundo para toda a página */
+body {
+	font-family: var(--fonte-corpo);
+	background-color: var(--bg-pagina);
+	color: var(--texto-principal);
+	line-height: 1.6;
+	font-size: 14px;
+}
+
+/* Remove sublinhado de todos os links por padrão */
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Remove estilo padrão de listas (ul/li) */
+ul, li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+
+/* ================================================================
+   3. MENU LATERAL (Sidebar)
+   
+   position: fixed → fica fixo na tela mesmo ao rolar a página
+   top: 0, left: 0 → ancorado no canto superior esquerdo
+   height: 100% → ocupa toda a altura da janela
+   overflow-y: auto → scroll vertical se o conteúdo for longo
+   z-index: 1000 → fica na frente de outros elementos
+================================================================ */
+.nav-side-menu {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: var(--sidebar-width);
+	height: 100%;
+	background-color: var(--verde-escuro);
+	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 1000;
+	display: flex;
+	flex-direction: column; /* empilha brand + lista verticalmente */
+
+	/* Scrollbar customizada (Chrome/Edge) */
+	scrollbar-width: thin;
+	scrollbar-color: var(--verde-medio) transparent;
+}
+
+/* ── Cabeçalho do menu: área da marca/logo ── */
+.brand {
+	padding: 20px 16px;
+	border-bottom: 1px solid var(--verde-medio);
+	flex-shrink: 0; /* não encolhe quando o menu tem scroll */
+}
+
+/* Texto e ícone da marca */
+.brand-text {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: #fff;
+	font-family: var(--fonte-display);
+	font-size: 18px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+}
+
+/* Ícone da folha verde no logo */
+.brand-icon {
+	font-size: 22px;
+	color: var(--verde-acento);
+}
+
+/* ── Botão hamburguer (≡) – só aparece no mobile ── */
+.toggle-btn {
+	display: none; /* oculto em telas grandes */
+	color: var(--texto-menu);
+	cursor: pointer;
+	padding: 12px 16px;
+}
+
+/* ── Container da lista de itens ── */
+.menu-list {
+	flex: 1; /* ocupa o espaço restante */
+	padding-top: 8px;
+}
+
+/* ── Item de menu ──
+   border-left: 3px cria a barra lateral de destaque
+   transition: anima a mudança de cor no hover
+*/
+.menu-item {
+	border-left: 3px solid transparent;
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+	transition: background-color var(--transicao), border-color var(--transicao);
+	cursor: pointer;
+}
+
+/* Link dentro do item de menu */
+.menu-item > a {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 13px 16px;
+	color: var(--texto-menu);
+	font-size: 13.5px;
+	font-weight: 500;
+	transition: color var(--transicao);
+}
+
+/* Ícone do item de menu (ex: fa-house, fa-clipboard-list) */
+.sidebar-icon {
+	width: 20px;           /* largura fixa alinha os ícones verticalmente */
+	text-align: center;
+	font-size: 15px;
+	flex-shrink: 0;
+	opacity: 0.85;
+}
+
+/* span de texto do item (cresce para empurrar a seta para a direita) */
+.menu-item > a span {
+	flex: 1;
+}
+
+/* Seta indicadora de submenu (fa-angle-down) */
+.arrow-icon {
+	font-size: 11px;
+	opacity: 0.6;
+	transition: transform 0.3s ease; /* rotaciona ao abrir */
+}
+
+/* Rotaciona a seta quando o submenu está aberto
+   Bootstrap adiciona aria-expanded="true" ao item pai quando aberto */
+.menu-item[aria-expanded="true"] .arrow-icon {
+	transform: rotate(180deg);
+}
+
+/* Estado hover: destaca com verde médio e borda */
+.menu-item:hover {
+	background-color: var(--verde-medio);
+	border-left-color: var(--verde-acento);
+}
+
+.menu-item:hover > a {
+	color: #fff;
+}
+
+/* Estado ativo: item atualmente selecionado */
+.menu-item.active {
+	background-color: var(--verde-medio);
+	border-left-color: var(--verde-acento);
+}
+
+.menu-item.active > a {
+	color: #fff;
+}
+
+/* ── Submenus ──
+   Os <ul class="sub-menu collapse"> usam Bootstrap para colapsar/expandir.
+   "collapse" é classe do Bootstrap que oculta o elemento.
+   "show" é adicionada pelo Bootstrap ao expandir.
+*/
+.sub-menu {
+	background-color: var(--verde-submenu);
+}
+
+.sub-menu li {
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.sub-menu li a {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 16px 11px 28px; /* indentação maior à esquerda */
+	color: rgba(212, 237, 216, 0.8); /* levemente mais transparente que o menu pai */
+	font-size: 13px;
+	transition: color var(--transicao), background-color var(--transicao);
+}
+
+.sub-menu li a:hover {
+	background-color: rgba(255,255,255,0.06);
+	color: #fff;
+}
+
+/* Ícone dentro do submenu (fa-fw = largura fixa, alinha todos os ícones) */
+.sub-menu li a i {
+	font-size: 12px;
+	width: 16px;
+	text-align: center;
+}
+
+
+/* ================================================================
+   4. TOPBAR (Barra Superior da Área Principal)
+   
+   Fica no topo do conteúdo à direita do menu.
+   Contém o título da página, seletor de competência e perfil.
+================================================================ */
+.topbar {
+	background-color: var(--bg-topbar);
+	border-bottom: 1px solid #e5ece7;
+	padding: 16px 28px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between; /* título à esquerda, controles à direita */
+	position: sticky;  /* fica fixo ao rolar o conteúdo abaixo */
+	top: 0;
+	z-index: 100;
+	gap: 16px;
+}
+
+/* Título da seção atual (ex: "Dashboard") */
+.page-title {
+	font-family: var(--fonte-display);
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--verde-escuro);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.page-title i {
+	color: var(--verde-claro);
+}
+
+/* Lado direito da topbar: competência + badge do usuário */
+.topbar-right {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+/* Wrapper do seletor de mês/competência */
+.competencia-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--texto-secundario);
+}
+
+.competencia-wrapper i {
+	color: var(--verde-claro);
+}
+
+/* <select> customizado para escolha de mês */
+.competencia-select {
+	border: 1.5px solid #d1e8d5;
+	border-radius: var(--radius-btn);
+	padding: 7px 12px;
+	font-family: var(--fonte-corpo);
+	font-size: 13px;
+	color: var(--texto-principal);
+	background-color: #f7fdf9;
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--transicao);
+}
+
+.competencia-select:focus {
+	border-color: var(--verde-claro);
+}
+
+/* Badge do usuário logado */
+.user-badge {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--texto-principal);
+	background: #f0f7f2;
+	border: 1.5px solid #d1e8d5;
+	border-radius: 30px;    /* muito arredondado = "pílula" */
+	padding: 6px 14px;
+}
+
+.user-badge i {
+	font-size: 18px;
+	color: var(--verde-claro);
+}
+
+
+/* ================================================================
+   5. ÁREA PRINCIPAL (Main)
+   
+   margin-left = largura do menu para não ficar atrás dele.
+   O menu usa position:fixed, então o conteúdo precisa desse deslocamento.
+================================================================ */
+.main {
+	margin-left: var(--sidebar-width);
+	min-height: 100vh;           /* garante que ocupa toda a altura */
+	display: flex;
+	flex-direction: column;
+}
+
+/* Área de conteúdo do dashboard (padding geral) */
+.dashboard-content {
+	padding: 28px;
+	display: flex;
+	flex-direction: column;
+	gap: 32px;                   /* espaço entre seções */
+}
+
+/* Rótulo de cada seção (ex: "Indicadores Financeiros") */
+.section-label {
+	font-family: var(--fonte-display);
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--texto-principal);
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 16px;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #dceee0;    /* linha divisória suave */
+}
+
+.section-label i {
+	color: var(--verde-claro);
+}
+
+
+/* ================================================================
+   6. CARDS KPI (Key Performance Indicators)
+   
+   CSS Grid cria automaticamente colunas de min 200px, max 1fr.
+   auto-fill: cria quantas colunas couberem no espaço disponível.
+   Isso é responsivo sem precisar de media queries.
+================================================================ */
+.kpi-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 16px;
+}
+
+/* Card individual */
+.kpi-card {
+	background: var(--bg-card);
+	border-radius: var(--radius-card);
+	padding: 20px;
+	box-shadow: var(--sombra-card);
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	border-left: 4px solid transparent; /* cor da borda muda por tipo de card */
+	
+	/* Estado inicial para animação de entrada (JavaScript adiciona .visible) */
+	opacity: 0;
+	transform: translateY(12px);
+	transition: opacity 0.4s ease, transform 0.4s ease, box-shadow var(--transicao);
+}
+
+/* Quando JavaScript adiciona a classe .visible, o card aparece suavemente */
+.kpi-card.visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Efeito hover: eleva o card com sombra maior */
+.kpi-card:hover {
+	box-shadow: var(--sombra-hover);
+	transform: translateY(-2px);
+}
+
+/* ── Cores de borda por tipo de KPI ── */
+.kpi-faturamento    { border-left-color: #16a34a; }
+.kpi-lucro          { border-left-color: #0891b2; }
+.kpi-despesas       { border-left-color: #d97706; }
+.kpi-ticket         { border-left-color: #7c3aed; }
+.kpi-receber        { border-left-color: #0284c7; }
+.kpi-inadimplencia  { border-left-color: #dc2626; }
+.kpi-os-abertas     { border-left-color: #f59e0b; }
+.kpi-os-concluidas  { border-left-color: #16a34a; }
+.kpi-contratos      { border-left-color: #0891b2; }
+.kpi-tecnicos       { border-left-color: #7c3aed; }
+
+/* ── Wrapper do ícone ── */
+.kpi-icon-wrap {
+	width: 44px;
+	height: 44px;
+	border-radius: 10px;
+	background-color: #f0f7f2;  /* fundo suave */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;              /* não encolhe quando o texto é longo */
+	font-size: 20px;
+	color: var(--verde-claro);
+}
+
+/* Cores de ícone por tipo de card */
+.kpi-faturamento .kpi-icon-wrap    { color: #16a34a; background-color: #f0fdf4; }
+.kpi-lucro .kpi-icon-wrap          { color: #0891b2; background-color: #ecfeff; }
+.kpi-despesas .kpi-icon-wrap       { color: #d97706; background-color: #fffbeb; }
+.kpi-ticket .kpi-icon-wrap         { color: #7c3aed; background-color: #f5f3ff; }
+.kpi-receber .kpi-icon-wrap        { color: #0284c7; background-color: #f0f9ff; }
+.kpi-inadimplencia .kpi-icon-wrap  { color: #dc2626; background-color: #fef2f2; }
+.kpi-os-abertas .kpi-icon-wrap     { color: #f59e0b; background-color: #fffbeb; }
+.kpi-os-concluidas .kpi-icon-wrap  { color: #16a34a; background-color: #f0fdf4; }
+.kpi-contratos .kpi-icon-wrap      { color: #0891b2; background-color: #ecfeff; }
+.kpi-tecnicos .kpi-icon-wrap       { color: #7c3aed; background-color: #f5f3ff; }
+
+/* ── Área de texto do KPI ── */
+.kpi-info {
+	flex: 1;
+	min-width: 0; /* permite que o texto quebre em linhas se necessário */
+}
+
+/* Rótulo descritivo (ex: "Faturamento do Mês") */
+.kpi-label {
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--texto-secundario);
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	margin-bottom: 4px;
+}
+
+/* Valor principal do KPI (ex: "R$ 48.750,00") – preenchido pelo JS */
+.kpi-value {
+	font-family: var(--fonte-display);
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--texto-principal);
+	margin-bottom: 6px;
+	line-height: 1.2;
+	/* Evita overflow se o texto for longo */
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Badge de variação (ex: "+12% vs mês anterior") */
+.kpi-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+	font-weight: 500;
+	padding: 2px 7px;
+	border-radius: 30px; /* pílula */
+}
+
+/* Variações de cor do badge */
+.kpi-up      { background-color: #dcfce7; color: #15803d; }
+.kpi-down    { background-color: #fef2f2; color: #dc2626; }
+.kpi-neutral { background-color: #f3f4f6; color: #6b7280; }
+
+
+/* ================================================================
+   7. TABELA DE ORDENS DE SERVIÇO
+================================================================ */
+
+/* Seção da tabela */
+.table-section {
+	background: var(--bg-card);
+	border-radius: var(--radius-card);
+	box-shadow: var(--sombra-card);
+	overflow: hidden;  /* bordas arredondadas não "vazar" sobre a tabela */
+}
+
+/* Cabeçalho da seção: título + botão "Nova OS" lado a lado */
+.table-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 24px 0;
+}
+
+.table-header .section-label {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+/* Botão "Nova OS" */
+.btn-nova-os {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background-color: var(--verde-claro);
+	color: #fff;
+	padding: 8px 16px;
+	border-radius: var(--radius-btn);
+	font-size: 13px;
+	font-weight: 600;
+	transition: background-color var(--transicao), transform var(--transicao);
+}
+
+.btn-nova-os:hover {
+	background-color: var(--verde-medio);
+	color: #fff;
+	transform: translateY(-1px);
+}
+
+/* Container com scroll horizontal em telas pequenas */
+.table-responsive {
+	overflow-x: auto;
+	padding: 16px 24px 24px;
+}
+
+/* Tabela de OS */
+.os-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13.5px;
+}
+
+/* Cabeçalho das colunas */
+.os-table thead th {
+	text-align: left;
+	padding: 10px 14px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--texto-secundario);
+	background-color: #f8faf8;
+	border-bottom: 1px solid #e5ece7;
+	white-space: nowrap; /* não quebra o texto do cabeçalho */
+}
+
+/* Linhas de dados */
+.os-table tbody td {
+	padding: 13px 14px;
+	color: var(--texto-principal);
+	border-bottom: 1px solid #f0f4f1;
+	vertical-align: middle; /* alinha o conteúdo verticalmente ao centro */
+}
+
+/* Hover na linha: destaque suave */
+.os-table tbody tr:hover td {
+	background-color: #f8fdf9;
+}
+
+/* Remove borda da última linha */
+.os-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* Número da OS com fonte monoespaçada (melhor para números) */
+.os-num {
+	font-family: monospace;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--texto-secundario);
+}
+
+/* ── Badges de tipo de serviço ── */
+.badge-servico {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: var(--radius-badge);
+	font-size: 11.5px;
+	font-weight: 600;
+}
+
+.badge-preventiva { background-color: #dbeafe; color: #1d4ed8; }
+.badge-corretiva  { background-color: #fef3c7; color: #92400e; }
+.badge-instalacao { background-color: #f3e8ff; color: #6b21a8; }
+
+/* ── Badges de status ── */
+.badge-status {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: var(--radius-badge);
+	font-size: 11.5px;
+	font-weight: 600;
+}
+
+.badge-aberta       { background-color: #fef3c7; color: #92400e; }
+.badge-em-andamento { background-color: #dbeafe; color: #1e40af; }
+.badge-finalizada   { background-color: #dcfce7; color: #15803d; }
+.badge-cancelada    { background-color: #fee2e2; color: #991b1b; }
+
+/* ── Botões de ação na tabela (olho, lápis) ── */
+.btn-acao {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 6px;
+	color: var(--texto-secundario);
+	background-color: #f3f4f6;
+	font-size: 13px;
+	margin-right: 4px;
+	transition: background-color var(--transicao), color var(--transicao);
+}
+
+.btn-acao:hover {
+	background-color: var(--verde-claro);
+	color: #fff;
+}
+
+
+/* ================================================================
+   8. ALERTAS E NOTIFICAÇÕES
+================================================================ */
+.alerts-section {
+	padding: 0;
+}
+
+/* Grid de 2 colunas para alertas (cai para 1 em telas pequenas) */
+.alerts-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 14px;
+}
+
+/* Card de alerta individual */
+.alert-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 16px 18px;
+	border-radius: var(--radius-card);
+	border-left: 4px solid transparent;
+	font-size: 13.5px;
+}
+
+/* ícone do alerta */
+.alert-card > i {
+	font-size: 20px;
+	flex-shrink: 0;
+	margin-top: 2px;
+}
+
+/* Variações de alerta */
+.alert-warn {
+	background-color: #fffbeb;
+	border-left-color: #f59e0b;
+	color: #78350f;
+}
+.alert-warn > i { color: #d97706; }
+
+.alert-danger {
+	background-color: #fef2f2;
+	border-left-color: #dc2626;
+	color: #7f1d1d;
+}
+.alert-danger > i { color: #dc2626; }
+
+.alert-success {
+	background-color: #f0fdf4;
+	border-left-color: #16a34a;
+	color: #14532d;
+}
+.alert-success > i { color: #16a34a; }
+
+/* Título dentro do alerta */
+.alert-card strong {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 2px;
+}
+
+/* Texto descritivo do alerta */
+.alert-card p {
+	margin: 0;
+	opacity: 0.85;
+	font-size: 13px;
+}
+
+
+/* ================================================================
+   9. RESPONSIVIDADE (Media Queries)
+   
+   @media (max-width: 768px): regras aplicadas em telas <= 768px (mobile/tablet)
+   
+   Estratégia:
+   - Menu lateral vira colapsável no topo (em vez de lateral)
+   - Conteúdo principal não tem mais margin-left
+   - Grid de KPIs vai para 1 coluna
+================================================================ */
+@media (max-width: 768px) {
+
+	/* ── Menu vira barra no topo em mobile ── */
+	.nav-side-menu {
+		position: relative;   /* sai do position:fixed */
+		width: 100%;          /* ocupa toda a largura */
+		height: auto;         /* altura automática */
+	}
+
+	/* Exibe o botão hamburguer */
+	.toggle-btn {
+		display: block;
+		position: absolute;
+		right: 16px;
+		top: 14px;
+	}
+
+	/* Texto da marca se alinha à esquerda */
+	.brand {
+		text-align: left;
+	}
+
+	/* Área principal sem deslocamento (menu não é mais lateral) */
+	.main {
+		margin-left: 0;
+	}
+
+	/* Topbar empilha verticalmente */
+	.topbar {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+		padding: 16px;
+	}
+
+	.topbar-right {
+		width: 100%;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	/* Conteúdo com padding menor */
+	.dashboard-content {
+		padding: 16px;
+		gap: 24px;
+	}
+
+	/* Cards KPI em coluna única */
+	.kpi-grid {
+		grid-template-columns: 1fr;
+	}
+
+	/* Alertas em coluna única */
+	.alerts-grid {
+		grid-template-columns: 1fr;
+	}
+
+	/* Tabela em coluna única (scroll horizontal já está ativo) */
+	.table-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 12px;
+	}
+}
+
+/* Telas médias: tablets em paisagem */
+@media (min-width: 769px) and (max-width: 1024px) {
+	/* Menu expandido sempre visível */
+	.nav-side-menu .menu-content {
+		display: block;
+	}
+
+	/* KPIs em 2 colunas */
+	.kpi-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/* Telas grandes: menu sempre expandido */
+@media (min-width: 769px) {
+	.nav-side-menu .menu-content {
+		display: block !important; /* sobrescreve o "collapse" do Bootstrap em desktop */
+	}
+}

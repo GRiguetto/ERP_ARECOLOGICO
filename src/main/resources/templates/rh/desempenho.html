@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Desempenho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+  <style>
+    .desemp-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--sombra-card);
+      padding: 24px;
+      transition: box-shadow var(--transicao);
+    }
+    .desemp-card:hover { box-shadow: var(--sombra-hover); }
+    .desemp-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .desemp-av { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; font-family: var(--fonte-display); color: #fff; flex-shrink: 0; }
+    .desemp-name { font-size: 15px; font-weight: 700; }
+    .desemp-role { font-size: 12.5px; color: var(--texto-secundario); }
+    .desemp-score { font-family: var(--fonte-display); font-size: 28px; font-weight: 800; color: var(--verde-claro); }
+    .metric-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f4f1; font-size: 13px; }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { color: var(--texto-secundario); }
+    .metric-val { font-weight: 600; color: var(--texto-principal); }
+    .mini-stars { color: #f59e0b; font-size: 13px; }
+    .desemp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Avaliação Geral</div>
+        <div class="summary-card-value">4.7 ★</div>
+        <div class="summary-card-sub">Satisfação dos clientes</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">OS Fechadas</div>
+        <div class="summary-card-value">34</div>
+        <div class="summary-card-sub">No mês atual</div>
+      </div>
+      <div class="summary-card summary-purple">
+        <div class="summary-card-label">Retrabalho</div>
+        <div class="summary-card-value">1,8%</div>
+        <div class="summary-card-sub">OS reabertas</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Pontualidade</div>
+        <div class="summary-card-value">94%</div>
+        <div class="summary-card-sub">Chegadas no prazo</div>
+      </div>
+    </div>
+
+    <!-- Cards de desempenho individuais -->
+    <div>
+      <h2 class="section-label" style="margin-bottom:20px"><i class="fa fa-star"></i> Desempenho Individual – Março / 2025</h2>
+      <div class="desemp-grid">
+
+        <!-- Ricardo -->
+        <div class="desemp-card">
+          <div class="desemp-header">
+            <div class="desemp-av" style="background:linear-gradient(135deg,var(--verde-medio),var(--verde-acento))">RS</div>
+            <div style="flex:1">
+              <div class="desemp-name">Ricardo Souza</div>
+              <div class="desemp-role">Técnico Sênior</div>
+            </div>
+            <div style="text-align:right">
+              <div class="desemp-score">4.9</div>
+              <div class="mini-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="metric-row"><span class="metric-label">OS Concluídas</span><span class="metric-val">12</span></div>
+          <div class="metric-row"><span class="metric-label">Retrabalho</span><span class="metric-val" style="color:var(--cor-sucesso)">0%</span></div>
+          <div class="metric-row"><span class="metric-label">Pontualidade</span><span class="metric-val" style="color:var(--cor-sucesso)">100%</span></div>
+          <div class="metric-row"><span class="metric-label">Tempo Médio / OS</span><span class="metric-val">2h 48m</span></div>
+          <div class="metric-row"><span class="metric-label">Clientes Satisfeitos</span><span class="metric-val">12 / 12</span></div>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--texto-secundario);margin-bottom:6px;text-transform:uppercase">Progresso na Meta do Mês</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%"></div></div>
+            <div style="font-size:11px;color:var(--texto-secundario);margin-top:4px">12 / 10 OS – Meta superada ✓</div>
+          </div>
+        </div>
+
+        <!-- Marcos -->
+        <div class="desemp-card">
+          <div class="desemp-header">
+            <div class="desemp-av" style="background:linear-gradient(135deg,#0891b2,#0284c7)">ML</div>
+            <div style="flex:1">
+              <div class="desemp-name">Marcos Lima</div>
+              <div class="desemp-role">Técnico Pleno</div>
+            </div>
+            <div style="text-align:right">
+              <div class="desemp-score">4.5</div>
+              <div class="mini-stars">★★★★☆</div>
+            </div>
+          </div>
+          <div class="metric-row"><span class="metric-label">OS Concluídas</span><span class="metric-val">9</span></div>
+          <div class="metric-row"><span class="metric-label">Retrabalho</span><span class="metric-val" style="color:var(--cor-aviso)">2,2%</span></div>
+          <div class="metric-row"><span class="metric-label">Pontualidade</span><span class="metric-val" style="color:var(--cor-sucesso)">89%</span></div>
+          <div class="metric-row"><span class="metric-label">Tempo Médio / OS</span><span class="metric-val">3h 12m</span></div>
+          <div class="metric-row"><span class="metric-label">Clientes Satisfeitos</span><span class="metric-val">8 / 9</span></div>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--texto-secundario);margin-bottom:6px;text-transform:uppercase">Progresso na Meta do Mês</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:90%"></div></div>
+            <div style="font-size:11px;color:var(--texto-secundario);margin-top:4px">9 / 10 OS – Quase lá!</div>
+          </div>
+        </div>
+
+        <!-- Felipe -->
+        <div class="desemp-card">
+          <div class="desemp-header">
+            <div class="desemp-av" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">FT</div>
+            <div style="flex:1">
+              <div class="desemp-name">Felipe Torres</div>
+              <div class="desemp-role">Técnico Pleno</div>
+            </div>
+            <div style="text-align:right">
+              <div class="desemp-score">4.8</div>
+              <div class="mini-stars">★★★★★</div>
+            </div>
+          </div>
+          <div class="metric-row"><span class="metric-label">OS Concluídas</span><span class="metric-val">11</span></div>
+          <div class="metric-row"><span class="metric-label">Retrabalho</span><span class="metric-val" style="color:var(--cor-sucesso)">0%</span></div>
+          <div class="metric-row"><span class="metric-label">Pontualidade</span><span class="metric-val" style="color:var(--cor-sucesso)">95%</span></div>
+          <div class="metric-row"><span class="metric-label">Tempo Médio / OS</span><span class="metric-val">3h 05m</span></div>
+          <div class="metric-row"><span class="metric-label">Clientes Satisfeitos</span><span class="metric-val">11 / 11</span></div>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--texto-secundario);margin-bottom:6px;text-transform:uppercase">Progresso na Meta do Mês</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%"></div></div>
+            <div style="font-size:11px;color:var(--texto-secundario);margin-top:4px">11 / 10 OS – Meta superada ✓</div>
+          </div>
+        </div>
+
+        <!-- Ana -->
+        <div class="desemp-card">
+          <div class="desemp-header">
+            <div class="desemp-av" style="background:linear-gradient(135deg,#d97706,#b45309)">AB</div>
+            <div style="flex:1">
+              <div class="desemp-name">Ana Beatriz Costa</div>
+              <div class="desemp-role">Técnica Júnior</div>
+            </div>
+            <div style="text-align:right">
+              <div class="desemp-score">4.3</div>
+              <div class="mini-stars">★★★★☆</div>
+            </div>
+          </div>
+          <div class="metric-row"><span class="metric-label">OS Concluídas</span><span class="metric-val">6</span></div>
+          <div class="metric-row"><span class="metric-label">Retrabalho</span><span class="metric-val" style="color:var(--cor-aviso)">4,5%</span></div>
+          <div class="metric-row"><span class="metric-label">Pontualidade</span><span class="metric-val" style="color:var(--cor-aviso)">80%</span></div>
+          <div class="metric-row"><span class="metric-label">Tempo Médio / OS</span><span class="metric-val">3h 50m</span></div>
+          <div class="metric-row"><span class="metric-label">Clientes Satisfeitos</span><span class="metric-val">5 / 6</span></div>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:600;color:var(--texto-secundario);margin-bottom:6px;text-transform:uppercase">Progresso na Meta do Mês</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill warn" style="width:75%"></div></div>
+            <div style="font-size:11px;color:var(--texto-secundario);margin-top:4px">6 / 8 OS – Em desenvolvimento</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('rh', 'Desempenho', 'fa-star');
+  $(document).ready(function () { animateCards('.summary-card'); });
+</script>
+</body>
+</html>

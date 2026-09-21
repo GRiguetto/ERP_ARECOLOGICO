@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Contas a Pagar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Cards de resumo -->
+    <div class="summary-grid">
+      <div class="summary-card summary-red">
+        <div class="summary-card-label">Total a Pagar</div>
+        <div class="summary-card-value">R$ 18.750</div>
+        <div class="summary-card-sub">Valores em aberto</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Vence em 7 dias</div>
+        <div class="summary-card-value">R$ 6.400</div>
+        <div class="summary-card-sub">4 pagamentos próximos</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Vencidas</div>
+        <div class="summary-card-value">R$ 2.100</div>
+        <div class="summary-card-sub">1 fornecedor em atraso</div>
+      </div>
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Pago (mês)</div>
+        <div class="summary-card-value">R$ 31.200</div>
+        <div class="summary-card-sub">+8% vs mês anterior</div>
+      </div>
+    </div>
+
+    <!-- Tabela de contas a pagar -->
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-arrow-up"></i> Contas a Pagar</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroPagar" class="filter-input" placeholder="🔍 Buscar por fornecedor, nº…">
+          <select class="filter-input" style="min-width:140px">
+            <option>Todos os status</option>
+            <option>Em aberto</option>
+            <option>Vencida</option>
+            <option>Paga</option>
+            <option>Parcial</option>
+          </select>
+          <button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Lançamento Manual</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaPagar">
+          <thead>
+            <tr>
+              <th>Nº</th>
+              <th>Fornecedor</th>
+              <th>Referência</th>
+              <th>Emissão</th>
+              <th>Vencimento</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- Fornecedor de gás refrigerante -->
+            <tr>
+              <td><span class="os-num">CP-0018</span></td>
+              <td>Frigelar Distribuidora</td>
+              <td>NF-3821 – Gás R-410A</td>
+              <td>18/03/2025</td>
+              <td>05/04/2025</td>
+              <td><strong>R$ 3.200,00</strong></td>
+              <td><span class="badge-status badge-em-andamento">Em aberto</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar pagamento" onclick="registrarPagamento('CP-0018')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Ver nota fiscal"><i class="fa fa-file-invoice"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+
+            <!-- Aluguel do espaço -->
+            <tr>
+              <td><span class="os-num">CP-0017</span></td>
+              <td>Imobiliária Central</td>
+              <td>Aluguel – Março/2025</td>
+              <td>01/03/2025</td>
+              <td>10/03/2025</td>
+              <td><strong>R$ 2.100,00</strong></td>
+              <td><span class="badge-status badge-cancelada">Vencida</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar pagamento" onclick="registrarPagamento('CP-0017')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Ver nota fiscal"><i class="fa fa-file-invoice"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+
+            <!-- Peças e materiais -->
+            <tr>
+              <td><span class="os-num">CP-0016</span></td>
+              <td>TechPeças Ltda.</td>
+              <td>NF-1147 – Placas e filtros</td>
+              <td>14/03/2025</td>
+              <td>28/03/2025</td>
+              <td><strong>R$ 1.850,00</strong></td>
+              <td><span class="badge-status badge-em-andamento">Em aberto</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar pagamento" onclick="registrarPagamento('CP-0016')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Ver nota fiscal"><i class="fa fa-file-invoice"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+
+            <!-- Folha de pagamento -->
+            <tr>
+              <td><span class="os-num">CP-0015</span></td>
+              <td>Folha de Pagamento</td>
+              <td>Salários – Março/2025</td>
+              <td>01/03/2025</td>
+              <td>05/04/2025</td>
+              <td><strong>R$ 9.400,00</strong></td>
+              <td><span class="badge-status badge-em-andamento">Em aberto</span></td>
+              <td>
+                <button class="btn-acao" title="Registrar pagamento" onclick="registrarPagamento('CP-0015')"><i class="fa fa-check"></i></button>
+                <button class="btn-acao" title="Ver detalhes"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+
+            <!-- Conta já paga -->
+            <tr>
+              <td><span class="os-num">CP-0014</span></td>
+              <td>Energisa</td>
+              <td>Fatura de Energia – Fevereiro</td>
+              <td>01/02/2025</td>
+              <td>10/02/2025</td>
+              <td><strong>R$ 1.320,00</strong></td>
+              <td><span class="badge-status badge-finalizada">Paga</span></td>
+              <td>
+                <button class="btn-acao" title="Ver comprovante"><i class="fa fa-eye"></i></button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Total em aberto: <strong style="color:var(--verde-claro)">R$ 18.750,00</strong></span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  // Inicializa o menu lateral com a seção "financeiro" ativa
+  initLayout('financeiro', 'Contas a Pagar', 'fa-arrow-up');
+
+  $(document).ready(function () {
+    // Anima os cards de resumo ao carregar
+    animateCards('.summary-card');
+    // Ativa o filtro de busca na tabela
+    setupTableFilter('filtroPagar', 'tabelaPagar');
+  });
+
+  // Registra o pagamento de uma conta e exibe notificação
+  function registrarPagamento(num) {
+    showToast(`Pagamento ${num} registrado com sucesso!`, 'success');
+  }
+</script>
+</body>
+</html>

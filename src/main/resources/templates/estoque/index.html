@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Estoque</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+</head>
+<body>
+
+<!-- Modal: Entrada/Saída de Estoque -->
+<div class="modal-overlay" id="modalMovimento">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa fa-boxes-stacked"></i> <span id="modalMovTitulo">Registrar Entrada</span></div>
+    <div class="form-row cols-2">
+      <div class="form-group">
+        <label class="form-label">Item</label>
+        <input type="text" class="form-control" id="movItem" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select class="form-control" id="movTipo">
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row cols-2">
+      <div class="form-group">
+        <label class="form-label">Quantidade</label>
+        <input type="number" class="form-control" id="movQtd" value="1" min="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Data</label>
+        <input type="date" class="form-control" id="movData">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:8px">
+      <label class="form-label">Motivo / Observação</label>
+      <input type="text" class="form-control" id="movMotivo" placeholder="Compra, uso em OS, devolução…">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalMovimento')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarMovimento()"><i class="fa fa-check"></i> Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Total de Itens</div>
+        <div class="summary-card-value">24</div>
+        <div class="summary-card-sub">Produtos cadastrados</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Valor em Estoque</div>
+        <div class="summary-card-value">R$ 8.450</div>
+        <div class="summary-card-sub">Custo total</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Estoque Mínimo</div>
+        <div class="summary-card-value">4</div>
+        <div class="summary-card-sub">Itens abaixo do mínimo</div>
+      </div>
+      <div class="summary-card summary-red">
+        <div class="summary-card-label">Sem Estoque</div>
+        <div class="summary-card-value">1</div>
+        <div class="summary-card-sub">Itens zerados</div>
+      </div>
+    </div>
+
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-boxes-stacked"></i> Itens em Estoque</h2>
+        <div class="table-filters">
+          <input type="text" id="filtroEstoque" class="filter-input" placeholder="🔍 Buscar item, categoria…">
+          <select class="filter-input" style="min-width:150px">
+            <option>Todas as categorias</option>
+            <option>Filtros</option>
+            <option>Gás Refrigerante</option>
+            <option>Peças Elétricas</option>
+            <option>Acessórios</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="abrirNovoItem()"><i class="fa fa-plus"></i> Novo Item</button>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table" id="tabelaEstoque">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Un.</th>
+              <th>Qtd Atual</th>
+              <th>Qtd Mínima</th>
+              <th>Custo Unit.</th>
+              <th>Situação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="os-num">EST001</span></td>
+              <td>Filtro de ar G4</td>
+              <td>Filtros</td>
+              <td>Un</td>
+              <td><strong>3</strong></td>
+              <td>10</td>
+              <td>R$ 45,00</td>
+              <td><span class="stock-badge stock-low"><i class="fa fa-exclamation-triangle"></i> Mínimo</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Filtro de ar G4','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Filtro de ar G4','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">EST002</span></td>
+              <td>Gás Refrigerante R-410A</td>
+              <td>Gás Refrigerante</td>
+              <td>kg</td>
+              <td><strong>18</strong></td>
+              <td>5</td>
+              <td>R$ 120,00</td>
+              <td><span class="stock-badge stock-ok"><i class="fa fa-check"></i> OK</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Gás Refrigerante R-410A','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Gás Refrigerante R-410A','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">EST003</span></td>
+              <td>Gás Refrigerante R-22</td>
+              <td>Gás Refrigerante</td>
+              <td>kg</td>
+              <td><strong>0</strong></td>
+              <td>3</td>
+              <td>R$ 95,00</td>
+              <td><span class="stock-badge stock-critical"><i class="fa fa-xmark"></i> Zerado</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Gás Refrigerante R-22','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Gás Refrigerante R-22','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">EST004</span></td>
+              <td>Dreno Flexível</td>
+              <td>Acessórios</td>
+              <td>metro</td>
+              <td><strong>45</strong></td>
+              <td>20</td>
+              <td>R$ 85,00</td>
+              <td><span class="stock-badge stock-ok"><i class="fa fa-check"></i> OK</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Dreno Flexível','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Dreno Flexível','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">EST005</span></td>
+              <td>Placa Eletrônica Samsung</td>
+              <td>Peças Elétricas</td>
+              <td>Un</td>
+              <td><strong>2</strong></td>
+              <td>2</td>
+              <td>R$ 210,00</td>
+              <td><span class="stock-badge stock-low"><i class="fa fa-exclamation-triangle"></i> Mínimo</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Placa Eletrônica Samsung','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Placa Eletrônica Samsung','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="os-num">EST006</span></td>
+              <td>Suporte externo galvanizado</td>
+              <td>Acessórios</td>
+              <td>Un</td>
+              <td><strong>12</strong></td>
+              <td>5</td>
+              <td>R$ 38,00</td>
+              <td><span class="stock-badge stock-ok"><i class="fa fa-check"></i> OK</span></td>
+              <td>
+                <button class="btn-acao" title="Entrada" onclick="abrirMovimento('Suporte externo galvanizado','entrada')"><i class="fa fa-arrow-down"></i></button>
+                <button class="btn-acao" title="Saída" onclick="abrirMovimento('Suporte externo galvanizado','saida')"><i class="fa fa-arrow-up"></i></button>
+                <button class="btn-acao" title="Editar"><i class="fa fa-pen"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <span>Exibindo 6 de 24 itens</span>
+        <div class="pagination-btns">
+          <button class="page-btn"><i class="fa fa-angle-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn"><i class="fa fa-angle-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('estoque', 'Estoque', 'fa-boxes-stacked');
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    setupTableFilter('filtroEstoque', 'tabelaEstoque');
+    // Preenche data atual no modal
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('movData').value = hoje;
+  });
+
+  function abrirMovimento(item, tipo) {
+    document.getElementById('movItem').value = item;
+    document.getElementById('movTipo').value = tipo;
+    document.getElementById('modalMovTitulo').textContent = tipo === 'entrada' ? 'Registrar Entrada' : 'Registrar Saída';
+    openModal('modalMovimento');
+  }
+
+  function abrirNovoItem() {
+    showToast('Funcionalidade em desenvolvimento.', 'warn');
+  }
+
+  function salvarMovimento() {
+    const tipo = document.getElementById('movTipo').value;
+    closeModal('modalMovimento');
+    showToast(`${tipo === 'entrada' ? 'Entrada' : 'Saída'} registrada com sucesso!`, 'success');
+  }
+</script>
+</body>
+</html>

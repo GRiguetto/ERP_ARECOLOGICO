@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Configurações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+  <style>
+    .config-toggle { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #e5ece7; }
+    .config-toggle:last-child { border-bottom: none; }
+    .config-toggle-info strong { font-size: 13.5px; font-weight: 600; display: block; }
+    .config-toggle-info span { font-size: 12.5px; color: var(--texto-secundario); }
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background: #d1e8d5; border-radius: 34px; transition: .3s; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .3s; }
+    input:checked + .slider { background: var(--verde-claro); }
+    input:checked + .slider:before { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Dados da empresa -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-building"></i> Dados da Empresa</div>
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Razão Social</label>
+          <input type="text" class="form-control" value="AR Ecológico Refrigeração Ltda.">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome Fantasia</label>
+          <input type="text" class="form-control" value="AR Ecológico">
+        </div>
+      </div>
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">CNPJ</label>
+          <input type="text" class="form-control" value="12.345.678/0001-90">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone</label>
+          <input type="text" class="form-control" value="(17) 3301-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input type="email" class="form-control" value="contato@arecologico.com.br">
+        </div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group">
+          <label class="form-label">Endereço</label>
+          <input type="text" class="form-control" value="Rua das Palmeiras, 220 – Centro">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade / UF</label>
+          <input type="text" class="form-control" value="São José do Rio Preto / SP">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="showToast('Dados da empresa salvos!','success')"><i class="fa fa-check"></i> Salvar</button>
+      </div>
+    </div>
+
+    <!-- Numeração automática -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-hashtag"></i> Numeração Automática</div>
+      <div class="form-row cols-3">
+        <div class="form-group">
+          <label class="form-label">Próxima OS</label>
+          <input type="number" class="form-control" value="0043">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Próxima Fatura</label>
+          <input type="number" class="form-control" value="0043">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prefixo OS</label>
+          <input type="text" class="form-control" value="#" maxlength="4">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="showToast('Numeração atualizada!','success')"><i class="fa fa-check"></i> Salvar</button>
+      </div>
+    </div>
+
+    <!-- Notificações -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-bell"></i> Notificações Automáticas</div>
+
+      <div class="config-toggle">
+        <div class="config-toggle-info">
+          <strong>Alerta de Estoque Mínimo</strong>
+          <span>Notificar quando item atingir quantidade mínima</span>
+        </div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="config-toggle">
+        <div class="config-toggle-info">
+          <strong>Contratos a Vencer</strong>
+          <span>Alertar 30, 15 e 7 dias antes do vencimento</span>
+        </div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="config-toggle">
+        <div class="config-toggle-info">
+          <strong>Inadimplência</strong>
+          <span>Alertar faturas vencidas há mais de 5 dias</span>
+        </div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="config-toggle">
+        <div class="config-toggle-info">
+          <strong>E-mail de Cobrança Automático</strong>
+          <span>Enviar boleto/PIX ao cliente ao finalizar OS</span>
+        </div>
+        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+      </div>
+      <div class="config-toggle">
+        <div class="config-toggle-info">
+          <strong>Relatório Semanal por E-mail</strong>
+          <span>Resumo de OS, financeiro e estoque toda segunda-feira</span>
+        </div>
+        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div class="form-actions" style="margin-top:8px">
+        <button class="btn btn-primary" onclick="showToast('Notificações salvas!','success')"><i class="fa fa-check"></i> Salvar Preferências</button>
+      </div>
+    </div>
+
+    <!-- Usuários -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-shield-halved"></i> Usuários e Acessos</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Último Acesso</th><th>Ações</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Administrador</strong></td>
+              <td>admin@arecologico.com.br</td>
+              <td><span class="badge-servico badge-instalacao">Administrador</span></td>
+              <td>Hoje, 08:12</td>
+              <td><button class="btn-acao"><i class="fa fa-pen"></i></button></td>
+            </tr>
+            <tr>
+              <td>Juliana Oliveira</td>
+              <td>juliana@arecologico.com.br</td>
+              <td><span class="badge-servico badge-preventiva">Administrativo</span></td>
+              <td>Hoje, 09:30</td>
+              <td>
+                <button class="btn-acao"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>Ricardo Souza</td>
+              <td>ricardo@arecologico.com.br</td>
+              <td><span class="badge-servico badge-corretiva">Técnico</span></td>
+              <td>Ontem, 17:45</td>
+              <td>
+                <button class="btn-acao"><i class="fa fa-pen"></i></button>
+                <button class="btn-acao" onclick="return confirmarExclusao()"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding-top:14px">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Convidar usuário: em desenvolvimento','warn')"><i class="fa fa-user-plus"></i> Convidar Usuário</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('config', 'Configurações', 'fa-gear');
+</script>
+</body>
+</html>

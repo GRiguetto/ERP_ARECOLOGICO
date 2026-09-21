@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AR Ecológico – ERP</title>
+
+	<!-- ============================================================
+	     FONTES DO GOOGLE FONTS
+	     - 'Syne': fonte display moderna para títulos e marca
+	     - 'DM Sans': fonte limpa e legível para textos do corpo
+	     Ambas carregadas via CDN do Google (sem custo, rápido).
+	============================================================ -->
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+	<!-- ============================================================
+	     FONT AWESOME 6 – Biblioteca de ícones vetoriais (SVG/CSS)
+	     Usada para ícones do menu lateral e nos cards do dashboard.
+	     Ex: fa-house = casa, fa-clipboard-list = prancheta, etc.
+	============================================================ -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+	<!-- Bootstrap 4 – Framework CSS para grid, cards e utilitários responsivos -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+	<!-- Nosso arquivo de estilos customizados (estilo visual da empresa) -->
+	<link rel="stylesheet" href="../static/css/style.css">
+	<link rel="stylesheet" href="../static/css/pages.css">
+
+	<!-- Redireciona para o login -->
+	<script>
+    if (!sessionStorage.getItem('ae_usuario')) {
+        window.location.href = 'login.html';
+    }
+</script>
+</head>
+
+<body>
+
+	<!-- ==============================================================
+	     MENU LATERAL (Sidebar / nav-side-menu)
+	     - Fica fixo no lado esquerdo da tela em telas grandes
+	     - Em telas pequenas (mobile), vira um menu colapsável via Bootstrap
+	     - Cada <li> representa um item do menu
+	     - Itens com submenu usam data-toggle="collapse" do Bootstrap
+	================================================================ -->
+	<nav class="nav-side-menu">
+
+		<!-- Logotipo da empresa no topo do menu -->
+		<div class="brand">
+			<!-- Texto de fallback caso o logo não carregue -->
+			<div class="brand-text">
+				<i class="fa fa-leaf brand-icon"></i>
+				<span>AR Ecológico</span>
+			</div>
+		</div>
+
+		<!-- Botão hamburguer (☰) visível apenas em telas pequenas (mobile) -->
+		<i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+		<!-- Lista principal do menu -->
+		<div class="menu-list">
+			<ul id="menu-content" class="menu-content collapse out">
+
+				<!-- ── Item simples: Dashboard ── -->
+				<li class="menu-item active">
+					<a href="./index.html">
+						<i class="fa fa-house sidebar-icon"></i>
+						<span>Dashboard</span>
+					</a>
+				</li>
+
+				<!-- ── Item com SUBMENU: Ordem de Serviço ── -->
+				<li class="menu-item" data-toggle="collapse" data-target="#os">
+					<a href="#">
+						<i class="fa fa-clipboard-list sidebar-icon"></i>
+						<span>Ordem de Serviço</span>
+						<i class="fa fa-angle-down arrow-icon"></i>
+					</a>
+				</li>
+				<ul class="sub-menu collapse" id="os">
+					<li><a href="./os/nova.html"><i class="fa fa-plus fa-fw"></i> Nova OS</a></li>
+					<li><a href="./os/lista.html"><i class="fa fa-list fa-fw"></i> Listar OS</a></li>
+				</ul>
+
+				<!-- ── Item com SUBMENU: Clientes ── -->
+				<li class="menu-item" data-toggle="collapse" data-target="#clientes">
+					<a href="#">
+						<i class="fa fa-users sidebar-icon"></i>
+						<span>Clientes</span>
+						<i class="fa fa-angle-down arrow-icon"></i>
+					</a>
+				</li>
+				<ul class="sub-menu collapse" id="clientes">
+					<li><a href="./clientes/cadastro.html"><i class="fa fa-user-plus fa-fw"></i> Cadastrar</a></li>
+					<li><a href="./clientes/lista.html"><i class="fa fa-list fa-fw"></i> Listar</a></li>
+				</ul>
+
+				<!-- ── Item simples: Serviços ── -->
+				<li class="menu-item">
+					<a href="./servicos/lista.html">
+						<i class="fa fa-hammer sidebar-icon"></i>
+						<span>Serviços</span>
+					</a>
+				</li>
+
+				<!-- ── Item simples: Estoque ── -->
+				<li class="menu-item">
+					<a href="./estoque/index.html">
+						<i class="fa fa-boxes-stacked sidebar-icon"></i>
+						<span>Estoque</span>
+					</a>
+				</li>
+
+				<!-- ── Item simples: Contratos ── -->
+				<li class="menu-item">
+					<a href="./contratos/lista.html">
+						<i class="fa fa-file-signature sidebar-icon"></i>
+						<span>Contratos</span>
+					</a>
+				</li>
+
+				<!-- ── Item com SUBMENU: Financeiro ── -->
+				<li class="menu-item" data-toggle="collapse" data-target="#financeiro">
+					<a href="#">
+						<i class="fa fa-money-bill-wave sidebar-icon"></i>
+						<span>Financeiro</span>
+						<i class="fa fa-angle-down arrow-icon"></i>
+					</a>
+				</li>
+				<ul class="sub-menu collapse" id="financeiro">
+					<li><a href="./financeiro/receber.html"><i class="fa fa-arrow-down fa-fw"></i> Contas a Receber</a></li>
+					<li><a href="./financeiro/receber.html"><i class="fa fa-arrow-up fa-fw"></i> Contas a Pagar</a></li>
+					<li><a href="./relatorios/index.html"><i class="fa fa-chart-line fa-fw"></i> Fluxo de Caixa</a></li>
+					<li><a href="./relatorios/index.html"><i class="fa fa-receipt fa-fw"></i> DRE</a></li>
+				</ul>
+
+				<!-- ── Item simples: Relatórios ── -->
+				<li class="menu-item">
+					<a href="./relatorios/index.html">
+						<i class="fa fa-chart-column sidebar-icon"></i>
+						<span>Relatórios</span>
+					</a>
+				</li>
+
+				<!-- ── Item com SUBMENU: RH / Funcionários ── -->
+				<li class="menu-item" data-toggle="collapse" data-target="#rh">
+					<a href="#">
+						<i class="fa fa-users-gear sidebar-icon"></i>
+						<span>Funcionários</span>
+						<i class="fa fa-angle-down arrow-icon"></i>
+					</a>
+				</li>
+				<ul class="sub-menu collapse" id="rh">
+					<li><a href="./rh/cadastro.html"><i class="fa fa-user-tie fa-fw"></i> Cadastrar</a></li>
+					<li><a href="./rh/ponto.html"><i class="fa fa-clock fa-fw"></i> Controle de Ponto</a></li>
+					<li><a href="./rh/desempenho.html"><i class="fa fa-star fa-fw"></i> Desempenho</a></li>
+				</ul>
+
+				<!-- ── Item simples: Fiscal (NFS-e) ── -->
+				<li class="menu-item">
+					<a href="./fiscal/index.html">
+						<i class="fa fa-file-invoice sidebar-icon"></i>
+						<span>Fiscal / NFS-e</span>
+					</a>
+				</li>
+
+				<!-- ── Item simples: Configurações ── -->
+				<li class="menu-item">
+					<a href="./configuracoes/index.html">
+						<i class="fa fa-gear sidebar-icon"></i>
+						<span>Configurações</span>
+					</a>
+				</li>
+
+				<!-- ── Item com SUBMENU: Ajuda ── -->
+				<li class="menu-item" data-toggle="collapse" data-target="#ajuda">
+					<a href="#">
+						<i class="fa fa-circle-question sidebar-icon"></i>
+						<span>Ajuda</span>
+						<i class="fa fa-angle-down arrow-icon"></i>
+					</a>
+				</li>
+				<ul class="sub-menu collapse" id="ajuda">
+					<li><a href="#"><i class="fa fa-book fa-fw"></i> Documentação</a></li>
+					<li><a href="#" target="_blank"><i class="fa fa-headset fa-fw"></i> Suporte</a></li>
+				</ul>
+
+			</ul>
+		</div><!-- /.menu-list -->
+	</nav><!-- /.nav-side-menu -->
+
+
+	<!-- ==============================================================
+	     ÁREA PRINCIPAL (main)
+	     - Tudo que fica à direita do menu lateral
+	     - margin-left = largura do menu (definido no CSS)
+	================================================================ -->
+	<main class="main" id="pagina">
+
+		<!-- ── Cabeçalho superior da página ── -->
+		<header class="topbar">
+			<div class="topbar-left">
+				<!-- Título dinâmico da seção atual -->
+				<h1 class="page-title">
+					<i class="fa fa-house"></i> Dashboard
+				</h1>
+			</div>
+			<div class="topbar-right">
+				<!-- Seletor de competência (mês/ano do relatório) -->
+				<div class="competencia-wrapper">
+					<label for="competencia">
+						<i class="fa fa-calendar-days"></i> Competência:
+					</label>
+					<select id="competencia" class="competencia-select">
+						<option value="">— Selecione o mês —</option>
+						<option value="2025-01">Janeiro / 2025</option>
+						<option value="2025-02">Fevereiro / 2025</option>
+						<option value="2025-03">Março / 2025</option>
+						<option value="2025-04">Abril / 2025</option>
+						<option value="2025-05">Maio / 2025</option>
+						<option value="2025-06">Junho / 2025</option>
+					</select>
+				</div>
+				<!-- Avatar/perfil do usuário logado -->
+				<div class="user-badge">
+					<i class="fa fa-circle-user"></i>
+					<span>Administrador</span>
+				</div>
+			</div>
+		</header>
+
+		<!-- ── Conteúdo do Dashboard ── -->
+		<div class="dashboard-content">
+
+			<!-- ============================================================
+			     SEÇÃO 1: KPIs FINANCEIROS
+			     Cada .kpi-card exibe um indicador chave (KPI = Key Performance Indicator)
+			     Os valores são preenchidos via JavaScript (AJAX) após selecionar competência
+			============================================================ -->
+			<section class="kpi-section">
+				<h2 class="section-label">
+					<i class="fa fa-chart-line"></i> Indicadores Financeiros
+				</h2>
+
+				<div class="kpi-grid">
+
+					<!-- Card: Faturamento do mês -->
+					<div class="kpi-card kpi-faturamento">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-circle-dollar-to-slot"></i>
+						</div>
+						<div class="kpi-info">
+							<!-- id="faturamento" é o alvo do JavaScript que vai inserir o valor -->
+							<p class="kpi-label">Faturamento do Mês</p>
+							<h3 class="kpi-value" id="faturamento">—</h3>
+							<span class="kpi-badge kpi-up">
+								<i class="fa fa-arrow-trend-up"></i> +12% vs mês anterior
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Lucro do mês -->
+					<div class="kpi-card kpi-lucro">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-sack-dollar"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Lucro do Mês</p>
+							<h3 class="kpi-value" id="lucro">—</h3>
+							<span class="kpi-badge kpi-up">
+								<i class="fa fa-arrow-trend-up"></i> +8% vs mês anterior
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Despesas do mês -->
+					<div class="kpi-card kpi-despesas">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-file-invoice-dollar"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Despesas do Mês</p>
+							<h3 class="kpi-value" id="despesas">—</h3>
+							<span class="kpi-badge kpi-down">
+								<i class="fa fa-arrow-trend-down"></i> -3% vs mês anterior
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Ticket médio por cliente -->
+					<div class="kpi-card kpi-ticket">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-receipt"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Ticket Médio / Cliente</p>
+							<h3 class="kpi-value" id="ticketMedio">—</h3>
+							<span class="kpi-badge kpi-neutral">
+								<i class="fa fa-minus"></i> estável	
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Contas a receber (em aberto) -->
+					<div class="kpi-card kpi-receber">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-hand-holding-dollar"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Contas a Receber (abertas)</p>
+							<h3 class="kpi-value" id="contasReceber">—</h3>
+							<span class="kpi-badge kpi-neutral">
+								<i class="fa fa-clock"></i> aguardando
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Inadimplência -->
+					<div class="kpi-card kpi-inadimplencia">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-triangle-exclamation"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Inadimplência</p>
+							<h3 class="kpi-value" id="inadimplencia">—</h3>
+							<span class="kpi-badge kpi-down">
+								<i class="fa fa-arrow-trend-down"></i> -1% vs mês anterior
+							</span>
+						</div>
+					</div>
+
+				</div><!-- /.kpi-grid -->
+			</section>
+
+
+			<!-- ============================================================
+			     SEÇÃO 2: KPIs OPERACIONAIS
+			     Dados sobre ordens de serviço, técnicos e contratos
+			============================================================ -->
+			<section class="kpi-section">
+				<h2 class="section-label">
+					<i class="fa fa-clipboard-list"></i> Indicadores Operacionais
+				</h2>
+
+				<div class="kpi-grid">
+
+					<!-- Card: OS abertas -->
+					<div class="kpi-card kpi-os-abertas">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-spinner"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">OS em Aberto</p>
+							<h3 class="kpi-value" id="osAbertas">—</h3>
+							<span class="kpi-badge kpi-neutral">aguardando execução</span>
+						</div>
+					</div>
+
+					<!-- Card: OS concluídas no mês -->
+					<div class="kpi-card kpi-os-concluidas">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-circle-check"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">OS Concluídas</p>
+							<h3 class="kpi-value" id="osConcluidas">—</h3>
+							<span class="kpi-badge kpi-up">
+								<i class="fa fa-arrow-trend-up"></i> +5% vs mês anterior
+							</span>
+						</div>
+					</div>
+
+					<!-- Card: Contratos ativos -->
+					<div class="kpi-card kpi-contratos">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-file-signature"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Contratos Ativos</p>
+							<h3 class="kpi-value" id="contratosAtivos">—</h3>
+							<span class="kpi-badge kpi-neutral">manutenção recorrente</span>
+						</div>
+					</div>
+
+					<!-- Card: Técnicos ativos -->
+					<div class="kpi-card kpi-tecnicos">
+						<div class="kpi-icon-wrap">
+							<i class="fa fa-helmet-safety"></i>
+						</div>
+						<div class="kpi-info">
+							<p class="kpi-label">Técnicos Ativos</p>
+							<h3 class="kpi-value" id="tecnicosAtivos">—</h3>
+							<span class="kpi-badge kpi-neutral">em campo</span>
+						</div>
+					</div>
+
+				</div><!-- /.kpi-grid -->
+			</section>
+
+
+			<!-- ============================================================
+			     SEÇÃO 3: TABELA DE ÚLTIMAS ORDENS DE SERVIÇO
+			     Exibe as OS mais recentes em formato de tabela
+			============================================================ -->
+			<section class="table-section">
+				<div class="table-header">
+					<h2 class="section-label">
+						<i class="fa fa-list-check"></i> Últimas Ordens de Serviço
+					</h2>
+					<!-- Botão de ação rápida para criar nova OS -->
+					<a href="./os/nova.html" class="btn-nova-os">
+						<i class="fa fa-plus"></i> Nova OS
+					</a>
+				</div>
+
+				<!-- Tabela responsiva (Bootstrap) – em telas pequenas aparece scroll horizontal -->
+				<div class="table-responsive">
+					<table class="os-table">
+						<!-- Cabeçalho da tabela: define as colunas -->
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Cliente</th>
+								<th>Técnico</th>
+								<th>Tipo de Serviço</th>
+								<th>Abertura</th>
+								<th>Status</th>
+								<th>Ações</th>
+							</tr>
+						</thead>
+						<!-- Corpo da tabela: linhas de dados -->
+						<tbody id="osTableBody">
+							<!-- Dados de exemplo – em produção, serão preenchidos via AJAX (jQuery $.get / $.ajax) -->
+							<tr>
+								<td><span class="os-num">#0042</span></td>
+								<td>Condomínio Verde Park</td>
+								<td>Ricardo Souza</td>
+								<td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+								<td>20/03/2025</td>
+								<td><span class="badge-status badge-em-andamento">Em andamento</span></td>
+								<td>
+									<a href="#" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+									<a href="#" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+								</td>
+							</tr>
+							<tr>
+								<td><span class="os-num">#0041</span></td>
+								<td>Supermercado Bom Preço</td>
+								<td>Marcos Lima</td>
+								<td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+								<td>18/03/2025</td>
+								<td><span class="badge-status badge-aberta">Aberta</span></td>
+								<td>
+									<a href="#" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+									<a href="#" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+								</td>
+							</tr>
+							<tr>
+								<td><span class="os-num">#0040</span></td>
+								<td>Clínica Vida Saudável</td>
+								<td>Felipe Torres</td>
+								<td><span class="badge-servico badge-instalacao">Instalação</span></td>
+								<td>15/03/2025</td>
+								<td><span class="badge-status badge-finalizada">Finalizada</span></td>
+								<td>
+									<a href="#" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+									<a href="#" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+								</td>
+							</tr>
+							<tr>
+								<td><span class="os-num">#0039</span></td>
+								<td>Escritório DataTech Ltda.</td>
+								<td>Ricardo Souza</td>
+								<td><span class="badge-servico badge-preventiva">Preventiva</span></td>
+								<td>12/03/2025</td>
+								<td><span class="badge-status badge-finalizada">Finalizada</span></td>
+								<td>
+									<a href="#" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+									<a href="#" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+								</td>
+							</tr>
+							<tr>
+								<td><span class="os-num">#0038</span></td>
+								<td>Residência Carlos Mendes</td>
+								<td>Marcos Lima</td>
+								<td><span class="badge-servico badge-corretiva">Corretiva</span></td>
+								<td>10/03/2025</td>
+								<td><span class="badge-status badge-cancelada">Cancelada</span></td>
+								<td>
+									<a href="#" class="btn-acao" title="Visualizar"><i class="fa fa-eye"></i></a>
+									<a href="#" class="btn-acao" title="Editar"><i class="fa fa-pen"></i></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+
+			<!-- ============================================================
+			     SEÇÃO 4: ALERTAS DO SISTEMA
+			     Notificações automáticas de estoque, contratos e vencimentos
+			============================================================ -->
+			<section class="alerts-section">
+				<h2 class="section-label">
+					<i class="fa fa-bell"></i> Alertas e Notificações
+				</h2>
+
+				<div class="alerts-grid">
+
+					<!-- Alerta de estoque mínimo (regra de negócio do escopo) -->
+					<div class="alert-card alert-warn">
+						<i class="fa fa-boxes-stacked"></i>
+						<div>
+							<strong>Estoque Mínimo Atingido</strong>
+							<p>Filtro de ar G4 – apenas 3 unidades restantes.</p>
+						</div>
+					</div>
+
+					<!-- Alerta de contrato próximo do vencimento -->
+					<div class="alert-card alert-warn">
+						<i class="fa fa-file-signature"></i>
+						<div>
+							<strong>Contrato a Vencer</strong>
+							<p>Condomínio Verde Park – vence em 7 dias.</p>
+						</div>
+					</div>
+
+					<!-- Alerta de inadimplência -->
+					<div class="alert-card alert-danger">
+						<i class="fa fa-triangle-exclamation"></i>
+						<div>
+							<strong>Pagamento Vencido</strong>
+							<p>Clínica Vida Saudável – fatura #F-0031 vencida há 15 dias.</p>
+						</div>
+					</div>
+
+					<!-- Confirmação positiva (OS concluída) -->
+					<div class="alert-card alert-success">
+						<i class="fa fa-circle-check"></i>
+						<div>
+							<strong>OS #0040 Finalizada</strong>
+							<p>Assinatura digital recebida. Cobrança gerada automaticamente.</p>
+						</div>
+					</div>
+
+				</div>
+			</section>
+
+		</div><!-- /.dashboard-content -->
+	</main><!-- /.main -->
+
+
+	<!-- ==============================================================
+	     SCRIPTS (carregados no final do <body> para não bloquear a renderização)
+	================================================================ -->
+	<!-- jQuery 3.3.1 – necessário para o Bootstrap 4 e para chamadas AJAX futuras -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<!-- Popper.js – necessário para tooltips e dropdowns do Bootstrap -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<!-- Bootstrap 4 JS – adiciona comportamento ao collapse, modal, dropdown, etc. -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+	<script>
+		// ==============================================================
+		// JAVASCRIPT DO DASHBOARD
+		// ==============================================================
+
+		// $(document).ready() espera o HTML terminar de carregar antes de executar
+		$(document).ready(function () {
+
+			// ──────────────────────────────────────────────────────────
+			// 1. ANIMAÇÃO DOS KPI CARDS AO CARREGAR
+			//    Percorre todos os cards e adiciona a classe "visible"
+			//    com um pequeno delay incremental (efeito cascata).
+			// ──────────────────────────────────────────────────────────
+			$('.kpi-card').each(function (index) {
+				var $card = $(this); // referência ao card atual
+
+				// setTimeout: executa a função após (index * 80) milissegundos
+				// Isso cria o efeito de entrada em cascata (stagger)
+				setTimeout(function () {
+					$card.addClass('visible');
+				}, index * 80);
+			});
+
+
+			// ──────────────────────────────────────────────────────────
+			// 2. EVENTO: MUDANÇA DE COMPETÊNCIA
+			//    Quando o usuário seleciona um mês no <select>,
+			//    disparamos uma requisição AJAX para buscar os KPIs.
+			//
+			//    AJAX (Asynchronous JavaScript And XML):
+			//    Permite atualizar partes da página sem recarregar tudo.
+			//    Aqui usamos $.ajax do jQuery para chamar uma API/backend.
+			// ──────────────────────────────────────────────────────────
+			$('#competencia').on('change', function () {
+				var competencia = $(this).val(); // pega o valor selecionado (ex: "2025-03")
+
+				if (!competencia) return; // não faz nada se nenhum mês foi selecionado
+
+				// Mostra "carregando..." nos cards enquanto aguarda a resposta
+				$('.kpi-value').text('...');
+
+				// ─── Exemplo de chamada AJAX (descomente quando tiver backend) ───
+				/*
+				$.ajax({
+					url: '/api/dashboard',       // endpoint da sua API
+					method: 'GET',               // método HTTP
+					data: { mes: competencia },  // parâmetros enviados
+					success: function (dados) {
+						// Preenche cada card com o valor retornado pela API
+						$('#faturamento').text(formatarMoeda(dados.faturamento));
+						$('#lucro').text(formatarMoeda(dados.lucro));
+						$('#despesas').text(formatarMoeda(dados.despesas));
+						$('#ticketMedio').text(formatarMoeda(dados.ticketMedio));
+						$('#contasReceber').text(formatarMoeda(dados.contasReceber));
+						$('#inadimplencia').text(dados.inadimplencia + '%');
+						$('#osAbertas').text(dados.osAbertas);
+						$('#osConcluidas').text(dados.osConcluidas);
+						$('#contratosAtivos').text(dados.contratosAtivos);
+						$('#tecnicosAtivos').text(dados.tecnicosAtivos);
+					},
+					error: function () {
+						alert('Erro ao carregar os dados. Tente novamente.');
+						$('.kpi-value').text('—');
+					}
+				});
+				*/
+
+				// ─── Dados simulados para demonstração (remover quando tiver backend) ───
+				setTimeout(function () {
+					var dadosSimulados = {
+						faturamento:     'R$ 48.750,00',
+						lucro:           'R$ 18.200,00',
+						despesas:        'R$ 30.550,00',
+						ticketMedio:     'R$ 812,50',
+						contasReceber:   'R$ 9.400,00',
+						inadimplencia:   '4,2%',
+						osAbertas:       '7',
+						osConcluidas:    '34',
+						contratosAtivos: '22',
+						tecnicosAtivos:  '5'
+					};
+
+					// Atualiza o texto de cada card com os dados simulados
+					$('#faturamento').text(dadosSimulados.faturamento);
+					$('#lucro').text(dadosSimulados.lucro);
+					$('#despesas').text(dadosSimulados.despesas);
+					$('#ticketMedio').text(dadosSimulados.ticketMedio);
+					$('#contasReceber').text(dadosSimulados.contasReceber);
+					$('#inadimplencia').text(dadosSimulados.inadimplencia);
+					$('#osAbertas').text(dadosSimulados.osAbertas);
+					$('#osConcluidas').text(dadosSimulados.osConcluidas);
+					$('#contratosAtivos').text(dadosSimulados.contratosAtivos);
+					$('#tecnicosAtivos').text(dadosSimulados.tecnicosAtivos);
+				}, 600); // 600ms de atraso simulando tempo de resposta do servidor
+			});
+
+
+			// ──────────────────────────────────────────────────────────
+			// 3. FUNÇÃO AUXILIAR: FORMATAR VALORES COMO MOEDA
+			//    Converte um número (ex: 48750) para "R$ 48.750,00"
+			//    usando a API nativa Intl.NumberFormat do JavaScript
+			// ──────────────────────────────────────────────────────────
+			function formatarMoeda(valor) {
+				return new Intl.NumberFormat('pt-BR', {
+					style: 'currency',
+					currency: 'BRL'
+				}).format(valor);
+			}
+
+
+			// ──────────────────────────────────────────────────────────
+			// 4. DESTACAR ITEM ATIVO NO MENU
+			//    Remove "active" de todos e adiciona no item clicado
+			// ──────────────────────────────────────────────────────────
+			$('.menu-item > a').on('click', function () {
+				$('.menu-item').removeClass('active'); // remove de todos
+				$(this).closest('.menu-item').addClass('active'); // adiciona no clicado
+			});
+
+		}); // fim do $(document).ready()
+	</script>
+
+</body>
+</html>

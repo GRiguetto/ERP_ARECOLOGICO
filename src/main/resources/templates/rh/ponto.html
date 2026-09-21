@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Controle de Ponto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+  <style>
+    .ponto-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--sombra-card);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ponto-func { display: flex; align-items: center; gap: 14px; }
+    .av { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--verde-medio), var(--verde-acento)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: var(--fonte-display); font-size: 14px; flex-shrink: 0; }
+    .ponto-entries { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .ponto-entry { text-align: center; }
+    .ponto-entry-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: var(--texto-secundario); }
+    .ponto-entry-val { font-size: 15px; font-weight: 700; font-family: var(--fonte-display); color: var(--texto-principal); }
+    .ponto-entry-val.falta { color: #dc2626; }
+    .ponto-entry-val.hora-extra { color: #0891b2; }
+    .ponto-divider { width: 1px; height: 36px; background: #e5ece7; }
+    .btn-ponto { min-width: 120px; }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Resumo do mês -->
+    <div class="summary-grid">
+      <div class="summary-card summary-green">
+        <div class="summary-card-label">Horas Trabalhadas</div>
+        <div class="summary-card-value">168h</div>
+        <div class="summary-card-sub">Meta: 176h no mês</div>
+      </div>
+      <div class="summary-card summary-blue">
+        <div class="summary-card-label">Horas Extras</div>
+        <div class="summary-card-value">12h</div>
+        <div class="summary-card-sub">Acumuladas no mês</div>
+      </div>
+      <div class="summary-card summary-red">
+        <div class="summary-card-label">Faltas</div>
+        <div class="summary-card-value">2</div>
+        <div class="summary-card-sub">No mês atual</div>
+      </div>
+      <div class="summary-card summary-orange">
+        <div class="summary-card-label">Atrasos</div>
+        <div class="summary-card-value">4</div>
+        <div class="summary-card-sub">Registros no mês</div>
+      </div>
+    </div>
+
+    <!-- Registro de hoje -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-clock"></i> Ponto de Hoje – <span id="dataHoje"></span></div>
+
+      <div style="display:flex; flex-direction:column; gap:16px">
+
+        <div class="ponto-card">
+          <div class="ponto-func">
+            <div class="av">RS</div>
+            <div>
+              <div style="font-weight:600">Ricardo Souza</div>
+              <div style="font-size:12px;color:var(--texto-secundario)">Técnico Sênior</div>
+            </div>
+          </div>
+          <div class="ponto-entries">
+            <div class="ponto-entry"><div class="ponto-entry-label">Entrada</div><div class="ponto-entry-val">08:02</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Saída</div><div class="ponto-entry-val">12:00</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Retorno</div><div class="ponto-entry-val">13:05</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Saída</div><div class="ponto-entry-val">—</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Total</div><div class="ponto-entry-val hora-extra">5h 03m</div></div>
+          </div>
+          <button class="btn btn-primary btn-sm btn-ponto" onclick="baterPonto('Ricardo Souza')"><i class="fa fa-sign-out-alt"></i> Saída</button>
+        </div>
+
+        <div class="ponto-card">
+          <div class="ponto-func">
+            <div class="av" style="background:linear-gradient(135deg,#0891b2,#0284c7)">ML</div>
+            <div>
+              <div style="font-weight:600">Marcos Lima</div>
+              <div style="font-size:12px;color:var(--texto-secundario)">Técnico Pleno</div>
+            </div>
+          </div>
+          <div class="ponto-entries">
+            <div class="ponto-entry"><div class="ponto-entry-label">Entrada</div><div class="ponto-entry-val">08:15</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Saída</div><div class="ponto-entry-val">12:10</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Retorno</div><div class="ponto-entry-val">13:00</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Saída</div><div class="ponto-entry-val">—</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Total</div><div class="ponto-entry-val hora-extra">4h 45m</div></div>
+          </div>
+          <button class="btn btn-primary btn-sm btn-ponto" onclick="baterPonto('Marcos Lima')"><i class="fa fa-sign-out-alt"></i> Saída</button>
+        </div>
+
+        <div class="ponto-card">
+          <div class="ponto-func">
+            <div class="av" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">FT</div>
+            <div>
+              <div style="font-weight:600">Felipe Torres</div>
+              <div style="font-size:12px;color:var(--texto-secundario)">Técnico Pleno</div>
+            </div>
+          </div>
+          <div class="ponto-entries">
+            <div class="ponto-entry"><div class="ponto-entry-label">Entrada</div><div class="ponto-entry-val falta">Falta</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Saída</div><div class="ponto-entry-val">—</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Retorno</div><div class="ponto-entry-val">—</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Saída</div><div class="ponto-entry-val">—</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Total</div><div class="ponto-entry-val falta">0h</div></div>
+          </div>
+          <button class="btn btn-warning btn-sm btn-ponto" onclick="showToast('Justificativa registrada.','warn')"><i class="fa fa-note-sticky"></i> Justificar</button>
+        </div>
+
+        <div class="ponto-card">
+          <div class="ponto-func">
+            <div class="av" style="background:linear-gradient(135deg,#d97706,#b45309)">AB</div>
+            <div>
+              <div style="font-weight:600">Ana Beatriz Costa</div>
+              <div style="font-size:12px;color:var(--texto-secundario)">Técnica Júnior</div>
+            </div>
+          </div>
+          <div class="ponto-entries">
+            <div class="ponto-entry"><div class="ponto-entry-label">Entrada</div><div class="ponto-entry-val">08:45</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Saída</div><div class="ponto-entry-val">12:00</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Almoço Retorno</div><div class="ponto-entry-val">13:00</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Saída</div><div class="ponto-entry-val">17:52</div></div>
+            <div class="ponto-divider"></div>
+            <div class="ponto-entry"><div class="ponto-entry-label">Total</div><div class="ponto-entry-val">7h 07m</div></div>
+          </div>
+          <button class="btn btn-secondary btn-sm btn-ponto" disabled><i class="fa fa-check"></i> Concluído</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Histórico do mês -->
+    <div class="data-table-section">
+      <div class="data-table-header">
+        <h2 class="section-label"><i class="fa fa-calendar-days"></i> Histórico – Março / 2025</h2>
+        <div class="table-filters">
+          <select class="filter-input" style="min-width:160px">
+            <option>Ricardo Souza</option>
+            <option>Marcos Lima</option>
+            <option>Felipe Torres</option>
+            <option>Ana Beatriz Costa</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" onclick="showToast('Relatório exportado!','success')"><i class="fa fa-file-excel"></i> Exportar</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto; padding:16px 24px 0">
+        <table class="data-table">
+          <thead>
+            <tr><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Retorno</th><th>Saída</th><th>Total</th><th>H. Extra</th><th>Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>20/03</td><td>08:02</td><td>12:00</td><td>13:00</td><td>17:05</td><td>8h 03m</td><td>—</td><td><span class="badge-status badge-finalizada">Normal</span></td></tr>
+            <tr><td>19/03</td><td>08:10</td><td>12:00</td><td>13:00</td><td>18:30</td><td>9h 20m</td><td>1h 20m</td><td><span class="badge-status badge-em-andamento">H. Extra</span></td></tr>
+            <tr><td>18/03</td><td>08:00</td><td>12:00</td><td>13:00</td><td>17:00</td><td>8h 00m</td><td>—</td><td><span class="badge-status badge-finalizada">Normal</span></td></tr>
+            <tr><td>17/03</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="badge-status badge-cancelada">Falta</span></td></tr>
+            <tr><td>14/03</td><td>09:15</td><td>12:00</td><td>13:00</td><td>17:00</td><td>7h 45m</td><td>—</td><td><span class="badge-status badge-aberta">Atraso</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination-bar">
+        <span>Mostrando 5 de 20 dias úteis</span>
+        <div class="pagination-btns">
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('rh', 'Controle de Ponto', 'fa-clock');
+
+  $(document).ready(function () {
+    animateCards('.summary-card');
+    const hoje = new Date();
+    document.getElementById('dataHoje').textContent =
+      hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  });
+
+  function baterPonto(nome) {
+    const agora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    showToast(`Saída de ${nome} registrada às ${agora}.`, 'success');
+  }
+</script>
+</body>
+</html>

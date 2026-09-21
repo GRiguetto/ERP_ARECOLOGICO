@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Ecológico – Detalhe OS #0042</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../static/css/style.css">
+  <link rel="stylesheet" href="../../static/css/pages.css">
+  <style>
+    .os-header-card {
+      background: var(--verde-escuro);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .os-header-num { font-family: var(--fonte-display); font-size: 28px; font-weight: 800; }
+    .os-header-sub { font-size: 14px; opacity: 0.75; margin-top: 4px; }
+    .os-header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<main class="main" id="pagina">
+  <div class="page-content">
+
+    <!-- Cabeçalho da OS -->
+    <div class="os-header-card">
+      <div>
+        <div class="os-header-num"><i class="fa fa-clipboard-list" style="font-size:22px;margin-right:10px;opacity:.8"></i>OS #0042</div>
+        <div class="os-header-sub">Condomínio Verde Park — Abertura: 20/03/2025</div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+        <span class="badge-status badge-em-andamento" style="font-size:13px;padding:6px 14px">Em andamento</span>
+        <div class="os-header-actions">
+          <a th:href="@{/os/nova}" class="btn btn-secondary btn-sm"><i class="fa fa-pen"></i> Editar</a>
+          <button class="btn btn-primary btn-sm" onclick="showToast('OS finalizada com sucesso!','success')"><i class="fa fa-check"></i> Finalizar OS</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px">
+
+      <!-- Dados gerais -->
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-info-circle"></i> Dados Gerais</div>
+        <div class="detail-grid">
+          <div class="detail-field">
+            <div class="detail-field-label">Cliente</div>
+            <div class="detail-field-value">Condomínio Verde Park</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Técnico</div>
+            <div class="detail-field-value">Ricardo Souza</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Tipo de Serviço</div>
+            <div class="detail-field-value"><span class="badge-servico badge-preventiva">Preventiva</span></div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Prioridade</div>
+            <div class="detail-field-value">Normal</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Data de Abertura</div>
+            <div class="detail-field-value">20/03/2025</div>
+          </div>
+          <div class="detail-field">
+            <div class="detail-field-label">Previsão</div>
+            <div class="detail-field-value">25/03/2025</div>
+          </div>
+          <div class="detail-field" style="grid-column: 1/-1">
+            <div class="detail-field-label">Endereço</div>
+            <div class="detail-field-value">Av. das Nações, 500 – Bloco A – São José do Rio Preto / SP</div>
+          </div>
+          <div class="detail-field" style="grid-column: 1/-1">
+            <div class="detail-field-label">Descrição</div>
+            <div class="detail-field-value" style="line-height:1.6">
+              Manutenção preventiva semestral em 8 unidades split. Limpeza de filtros, verificação de gás, teste de funcionamento e ajuste da direção do ar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Linha do tempo -->
+      <div class="form-card">
+        <div class="form-card-title"><i class="fa fa-clock-rotate-left"></i> Histórico da OS</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fa fa-plus"></i></div>
+            <div class="timeline-body">
+              <strong>OS Criada</strong>
+              <p>Sistema gerou a OS automaticamente via contrato.</p>
+              <div class="timeline-time">20/03/2025 às 08:12</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fa fa-user"></i></div>
+            <div class="timeline-body">
+              <strong>Técnico Designado</strong>
+              <p>Ricardo Souza foi alocado para esta OS.</p>
+              <div class="timeline-time">20/03/2025 às 09:30</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="border-color:#0891b2;color:#0891b2"><i class="fa fa-play"></i></div>
+            <div class="timeline-body">
+              <strong>Serviço Iniciado</strong>
+              <p>Técnico deu entrada no local e iniciou a manutenção.</p>
+              <div class="timeline-time">21/03/2025 às 08:45</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="border-color:#d97706;color:#d97706"><i class="fa fa-pause"></i></div>
+            <div class="timeline-body">
+              <strong>Aguardando Peça</strong>
+              <p>1 filtro G4 solicitado ao estoque (em trânsito).</p>
+              <div class="timeline-time">21/03/2025 às 11:20</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipamentos -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-wind"></i> Equipamentos</div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr><th>Equipamento</th><th>Marca / Modelo</th><th>BTU</th><th>Nº Série</th><th>Localização</th><th>Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Split Hi-Wall</td><td>LG S4-Q09WA</td><td>9.000</td><td>SN001234</td><td>Sala de Reuniões</td><td><span class="badge-status badge-finalizada">OK</span></td></tr>
+            <tr><td>Split Hi-Wall</td><td>LG S4-Q12WA</td><td>12.000</td><td>SN001235</td><td>Recepção</td><td><span class="badge-status badge-finalizada">OK</span></td></tr>
+            <tr><td>Split Cassete</td><td>Midea 30.000</td><td>30.000</td><td>SN009982</td><td>Salão Principal</td><td><span class="badge-status badge-aberta">Pendente</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Financeiro -->
+    <div class="form-card">
+      <div class="form-card-title"><i class="fa fa-money-bill-wave"></i> Valores</div>
+      <div class="detail-grid">
+        <div class="detail-field">
+          <div class="detail-field-label">Mão de Obra</div>
+          <div class="detail-field-value">R$ 600,00</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Materiais</div>
+          <div class="detail-field-value">R$ 250,00</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Desconto</div>
+          <div class="detail-field-value">R$ 0,00</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Total Geral</div>
+          <div class="detail-field-value" style="font-size:20px;font-weight:700;color:var(--verde-claro)">R$ 850,00</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Forma de Pagamento</div>
+          <div class="detail-field-value">Boleto Bancário</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Vencimento</div>
+          <div class="detail-field-value">05/04/2025</div>
+        </div>
+      </div>
+      <div style="padding-top:16px; display:flex; gap:10px; justify-content:flex-end">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('PDF gerado!','success')"><i class="fa fa-file-pdf"></i> Exportar PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Cobrança enviada ao cliente!','success')"><i class="fa fa-paper-plane"></i> Gerar Cobrança</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="../../static/js/utils.js"></script>
+<script src="../../static/js/nav.js"></script>
+<script>
+  initLayout('os', 'Detalhe OS #0042', 'fa-eye');
+</script>
+</body>
+</html>
